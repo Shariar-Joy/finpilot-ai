@@ -1936,6 +1936,7 @@ pre {
 }
 /* Dialogs */
 .modal {
+  margin: auto;
   max-width: min(570px, calc(100vw - 32px));
   width: 100%;
   background: var(--panel);
