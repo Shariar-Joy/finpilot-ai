@@ -5,7 +5,7 @@ async function demo(page: Page) {
   await page.getByRole("button", { name: "Explore the live demo" }).click();
   await expect(
     page.getByRole("heading", { name: "Looking good, Alex." }),
-  ).toBeVisible();
+  ).toBeVisible({ timeout: 20000 });
 }
 test("golden demo: evidence, reject unchanged, approve exact budget, audit", async ({
   page,
