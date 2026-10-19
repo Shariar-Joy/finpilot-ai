@@ -1,0 +1,39 @@
+# Gamma prompt
+
+Copy the prompt below into Gamma. Attach the technical paper, security report, execution-evidence report, actual screenshots and the demo recording from this repository. This file is a prompt only; no slide deck has been generated.
+
+---
+
+Create an English, competition-quality **12-slide presentation lasting 9 minutes 30 seconds or less** for **FinPilot AI — Your money, understood.** It is for the **2026 Shenzhen International FinTech Competition, International Track, Topic A: Personal Finance Assistant**. The audience is fintech practitioners and academic judges. Use an evidence-led product/engineering narrative that makes one completed financial sandbox task easy to understand. Keep two team-member names, institutions and emails **blank**; do not infer them from the repository owner's username.
+
+Use a restrained premium design: navy backgrounds, off-white text, indigo emphasis and teal status accents; consistent grids; large readable typography; ample whitespace; no stock banking imagery, fake bank logos, invented product screens, decorative 3D coins, dense paragraphs or generic AI claims. Use actual uploaded application screenshots. Architecture and approval diagrams may be redrawn as clean vector diagrams only if they preserve the supplied system boundaries. Small source/evidence footers should remain readable. The presentation must not suggest IEEE publication or competition acceptance.
+
+**Evidence and factual boundaries**
+
+- Source: https://github.com/Shariar-Joy/finpilot-ai. Use the repository README, technical paper, security self-assessment, `docs/execution-evidence.md`, `docs/review-report.md`, `docs/evidence/benchmark.json`, actual audit JSON and actual test output as the factual record.
+- This is a synthetic sandbox: no bank connection, transfers, real financial credentials, emails or regulated investment advice. Data resets on restart in memory mode. PostgreSQL support and migration are implemented; distinguish actual CI outcomes from unexecuted local database claims.
+- Fixed evaluation date: **19 October 2026**. The 90-day synthetic dataset has **134 transactions**. October dining spending is **$648.10** through day 19 versus **$241.50** through the same days of September. Both periods have **17 purchases**. Average amounts are **$38.12** and **$14.21**; the largest current dining purchase is **$248.00**. A 20% reduction produces a **November budget of $518.48** using integer-cent arithmetic. Other live demo dates may change these figures; label this fixed-seed example.
+- The optional model selects read/proposal tools; the server owns calculations and permissions. A fully functional deterministic agent runs without a key. Live OpenAI calls were not exercised without a supplied key; mocked provider tests are not a live-model evaluation.
+- Approvals are user-bound, exact-payload-bound, one-time and expire in five minutes. Rejection consumes the token and records the decision while leaving financial records unchanged. The model has no direct mutation authority.
+- Use only test counts actually recorded in the attached verification report. The reviewed local result is **61 TypeScript/API tests, 4 Chromium scenarios and 8 Python tests** if the attached final report confirms these counts. These are engineering checks, not 100% real-world accuracy or a claim of complete security. If newer results differ, use the newer actual values.
+- The microbenchmark measures in-process deterministic agent execution only: 10 warm-ups, 100 measured runs. Read exact median/p95 from `benchmark.json`; do not call them HTTP, browser, database, or LLM latency. It is optional to omit this microbenchmark from the deck.
+- Runtime advisory results are point-in-time scans, not a guarantee of security. No market-size number, revenue, customer adoption, user study, fraud-detection accuracy, compliance certification, funding, award or performance comparison may be invented.
+
+**Slide plan and timing**
+
+1. **Your money, understood.** (25 s) Project/title, Topic A, one concrete promise: a spending question becomes an explained and explicitly approved plan. Leave two member identity slots empty. Use the actual dashboard as the visual anchor.
+2. **The gap between insight and action** (40 s) Show a simple user question → unclear cause → risky/unclear next action. State the need for evidence, exact calculations and user control. No unsupported market statistics.
+3. **One useful task, end to end** (45 s) Present the golden prompt. Draw the actual journey: inspect ledger → compare spending → cite records → propose next-month budget → approve or reject → verify audit/state.
+4. **A financial picture built from records** (40 s) Use actual dashboard and transactions screenshots. Highlight income/expense/savings, category mix, CSV preview and deduplication. Label all figures synthetic.
+5. **Explain the dining increase** (50 s) Use the fixed-seed values: $648.10 vs $241.50, 17 purchases each, larger average ticket and $248 group dinner. Include transaction evidence. Present descriptive observations, not an invented behavioral cause.
+6. **Turn the insight into a reviewed plan** (45 s) Show $648.10 × 80% → $518.48, rounded in cents, target November. Show the real proposal card. Explicitly separate proposed from applied.
+7. **Watch the task complete** (75 s) Insert a real 60–75-second excerpt from the supplied screen recording if Gamma supports it; otherwise reserve a clear live-demo placeholder. Show approval saving the exact budget and audit event, then a separate rejection leaving finances unchanged. Never replace the clip with an invented animation that claims execution.
+8. **How the system works** (45 s) One clean architecture figure: Next.js UI/API; deterministic TypeScript tools; optional OpenAI planning; user-owned ledger using Prisma/PostgreSQL or explicit memory demo; private stateless FastAPI independent arithmetic. No real bank/payment rail.
+9. **Permissions are part of the product** (55 s) Three tiers: read, propose, apply. Show owner + payload hash + token hash + expiry + pending status. Explain that token consumption, financial change and audit commit atomically. Use the real approval/audit screenshots.
+10. **Evidence that can be reproduced** (45 s) Actual test counts and scenarios, production-build result, and live Next.js/FastAPI agreement. Distinguish mocks, local runs and any observed GitHub CI result. No unexecuted “passed” labels.
+11. **Honest scope and next steps** (45 s) Known limits: no real funds, bounded fallback intents, model semantics still need evaluation, aggregate storage/rate-limit scaling, identity/retention hardening. Prioritize durable deployment verification, broader intent tests and independent security/user assessment.
+12. **A complete task, with the user in control** (30 s) Close on the demonstrated outcome, source/evidence QR link and two blank member slots. Map to the judges' task-completion/security/interaction priorities without predicting a score.
+
+Total planned narration: **9 minutes**, including the demo excerpt. Allow about 20 seconds for transitions for an approximately **9 minutes 20 seconds** presentation. Adjust transitions to remain below ten minutes. Add concise speaker notes with a concrete narrative and the source of each numerical/verification claim. Keep on-slide text short and diagrams readable. Include a short appendix of source URLs only if it does not interrupt the main 12-slide story; appendix is for questions, not extra narrated claims.
+
+Before finishing, check every amount, count, date, screenshot, approval state and external verification claim against the supplied artifacts. If a fact is missing, omit it or leave a clearly labeled field for review; never fill it with a plausible estimate.

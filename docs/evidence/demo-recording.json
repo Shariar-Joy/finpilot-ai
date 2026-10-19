@@ -1,0 +1,13 @@
+{
+  "recordedAt": "2026-10-19T07:51:38.376Z",
+  "elapsedSeconds": 84,
+  "synthetic": true,
+  "audio": false,
+  "captioning": "Descriptive recording captions only; all financial actions are actual application interactions",
+  "assertions": [
+    "Approval saved exact reviewed payload",
+    "Separate rejection left complete budget array unchanged",
+    "No browser page errors"
+  ],
+  "file": "docs/evidence/demo.webm"
+}

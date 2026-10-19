@@ -1,0 +1,18 @@
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[box] (ui) at (0,0) {Responsive UI\\Review and confirm};
+\node[box] (api) at (3.7,0) {Next.js API\\Session, origin, schema};
+\node[box] (tools) at (7.4,0) {Deterministic tools\\Read / propose / apply};
+\node[box] (repo) at (11.1,0) {User-owned ledger\\Atomic version update};
+\node[box] (llm) at (3.7,1.7) {Optional OpenAI\\Bounded tool planner};
+\node[box] (python) at (7.4,-1.7) {Private FastAPI\\Independent analysis};
+\node[box] (pg) at (11.1,-1.7) {Prisma / PostgreSQL\\Durable JSONB ledger};
+\node[box] (mem) at (11.1,1.7) {Explicit demo mode\\Ephemeral process memory};
+\draw[flow] (ui)--(api);
+\draw[flow] (api)--(tools);
+\draw[flow] (tools)--(repo);
+\draw[optional] (api)--(llm);
+\draw[optional] (llm)-| node[pos=.28,above,font=\scriptsize]{validated plan} (tools);
+\draw[flow] (api.south) |- (python.west);
+\draw[flow] (repo)--(pg);
+\draw[flow] (repo)--(mem);
+\end{tikzpicture}

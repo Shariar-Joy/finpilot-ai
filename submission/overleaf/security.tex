@@ -1,0 +1,107 @@
+\documentclass[conference,a4paper]{IEEEtran}
+\input{shared.tex}
+\title{FinPilot AI Security Self-Assessment: Permission Tiers, Approval Binding, and Residual Risks}
+\teamAuthors
+\begin{document}
+\maketitle
+\begin{abstract}
+This report assesses the implemented controls and known risks of the FinPilot AI synthetic personal-finance sandbox. It maps assets and trust boundaries to read, proposal, and mutation permissions; describes session ownership, request validation, and exact-payload approval; and connects the controls to reproducible tests. It is an engineering self-assessment, not an independent penetration test, legal compliance opinion, or certification. Only synthetic accounts and financial records are used. Review evidence is dated \EvidenceDate{}; external services and deployment conditions are explicitly distinguished from tested behavior.
+\end{abstract}
+\begin{IEEEkeywords}agent security, least privilege, approval, auditability, personal finance\end{IEEEkeywords}
+
+\section{Scope and Assets}
+The assessed system contains the Next.js browser/API boundary, deterministic TypeScript tools, the optional OpenAI planner, the memory/PostgreSQL repository interface, and private FastAPI analytics. Protected assets are each user's ledger, budget/reminder state, session credentials, proposal tokens, model/service keys, and the integrity of audit decisions. Real banks, payment rails, external emails, and investment execution are outside the product. A CSV is treated as synthetic untrusted input regardless of its merchant text.
+
+The threat model considers unauthenticated clients, one authenticated user targeting another, manipulated input or model output, duplicate/racing approval requests, and spreadsheet consumers of exported files. Database administrators, the application host, and the configured TLS gateway remain trusted operators. Their compromise is not prevented by application ownership checks.
+
+\section{Permission-Tier Implementation}
+\begin{table*}[t]
+\caption{Implemented agent permissions and authorization boundary}
+\centering\small
+\begin{tabular}{L{18mm}L{83mm}L{65mm}}
+\toprule Tier & Operations & Enforcement\\\midrule
+Read & \texttt{get\_spending\_summary}, \texttt{list\_transactions}, \texttt{compare\_months}, \texttt{get\_budget\_status}, \texttt{detect\_recurring\_bills}, \texttt{explain\_anomalies} & Session-derived owner; bounded arguments; source-derived results and audit event. No financial mutation.\\
+Propose & \texttt{propose\_budget\_change}, \texttt{propose\_bill\_reminder} & Server computes an exact payload and issues an expiring random token. Preparing a proposal does not change a budget or reminder.\\
+Mutate & \texttt{apply\_budget\_change}, \texttt{apply\_bill\_reminder} & Not exposed to the model. Verified session, exact payload hash, token hash, pending status, and expiry are required. Decision and financial write commit atomically.\\
+Direct UI & Category editing, CSV commit, budget CRUD, reminder completion & Explicit user-facing confirmation and server validation. These are direct authenticated user commands, separate from the agent's token path.\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+The model's permission surface consists of narrow read/proposal function schemas. It cannot select an arbitrary SQL operation, HTTP endpoint, filesystem path, or mutation function. Unknown tools and structurally invalid plans do not gain execution authority. Model arithmetic and statements of permission are ignored. A valid but undesirable proposed change still requires human review.
+
+This separation addresses a concrete form of excessive agency described by OWASP~\cite{owaspagency}. It does not imply that prompt injection is universally solved. The current planner receives the user's question and schemas, not uploaded ledger contents; merchant strings remain inert data in the deterministic executor. Eight tool steps, a 12-second provider timeout, and a 20-second guard bound planning work.
+
+\section{Authorization and Atomic Decisions}
+A random 256-bit proposal token is returned once to its originating browser tab. The server stores its SHA-256 hash, canonical payload hash, owner, five-minute expiry, and status. The originating tab keeps the token in sessionStorage; general ledger responses and conversation history omit token secrets. The decision endpoint validates request shape and Origin, authenticates the session, and compares all proposal bindings. Wrong-user, changed-payload, expired, used, or wrong-token attempts fail.
+
+Successful approval consumes the token, updates the exact reviewed budget/reminder, updates the conversation's decision timeline, and appends an audit record in one versioned ledger update. Rejection consumes the token and appends the decision without modifying financial arrays. A failing operation discards its isolated copy. Concurrent requests cannot both commit the same version; regression tests require exactly one successful use. A denial is logged separately without the rejected token or financial text.
+
+\section{Control Assessment}
+\subsection{Identity and Ownership}
+Passwords are bcrypt hashes with cost 12 for registered accounts. Input must have at least 12 characters and at most 72 UTF-8 bytes. One-click demos receive random, unshared passwords and isolated synthetic ledgers. Encrypted iron-session cookies are HttpOnly, SameSite=Lax, and expire after eight hours. Secure is enabled for HTTPS APP\_ORIGIN. Session records store a token hash and support immediate logout revocation. Every protected resource lookup derives its owner from this validated session. Caller-supplied user IDs do not select another ledger.
+
+\subsection{Request and Data Validation}
+Write requests require the expected Origin and JSON content type. No browser wildcard CORS is enabled. Request streaming is capped at 768~KB. Zod constrains dates, months, categories, strings, confirmation values, and integer amounts. Individual money values are bounded; aggregate operations reject unsafe integers. CSV validation rejects an entire invalid batch, reruns within the mutation, and skips deterministic duplicates. User strings are escaped by React. Exports neutralize formula-prefixed merchant cells.
+
+\subsection{Secrets, Service Calls, and Headers}
+Database, model, session, and analytics secrets are read only from server environment variables. No production secret is committed. FastAPI requires its own service token with timing-safe comparison, limits body size to 2~MB and records to 10,000, and has no database or mutation capability. Next.js applies a three-second timeout. CSP, frame denial, nosniff, referrer policy, and disabled device permissions are configured. Protected API responses and downloads use no-store caching.
+
+\subsection{Auditability}
+Each audit entry contains actor, action, decision, UTC timestamp, correlation ID, and a small explicit metadata object. Passwords, session/approval tokens, API keys, and merchant/chat text are excluded from audit metadata. Payload hashes allow a reviewed proposal to be tied to a recorded decision without storing its token. Audit integrity depends on the ledger store and trusted operators; the implementation is not a separately immutable or externally witnessed log.
+
+\section{Verification Evidence}
+The full local suites contain \UnitTests{} TypeScript domain/API checks, \BrowserTests{} Chromium scenarios, and \PythonTests{} FastAPI checks. Security-relevant evidence includes:
+\begin{enumerate}
+\item Unauthenticated and cross-origin requests are rejected; another account cannot edit a transaction or budget it does not own.
+\item Payload modification, cross-user use, expiry, wrong tokens, and replay fail. A wrong-payload attempt does not consume an otherwise valid token.
+\item A pair of concurrent approval requests yields one committed application. A mutation throwing after editing its copy leaves stored financial records unchanged.
+\item CSV preview performs no write; invalid batches roll back; import requires confirmation; repeated valid imports add no duplicates.
+\item Mocked provider output cannot select an apply tool. Unknown/oversized plans and provider failure do not grant write access.
+\item Named-merchant validation prevents a request for an unknown merchant from becoming a reminder for a different bill.
+\item Browser approval/rejection produces the expected budget and actual audit decision; safe client handling covers network and non-JSON proxy errors.
+\end{enumerate}
+These checks demonstrate bounded implementation behavior. They do not constitute complete adversarial coverage, a full code-analysis proof, or a real-world detection-quality evaluation. Exact commands and outcomes are recorded in the repository~\cite{repo}.
+
+\section{Known-Risk Register}
+\begin{table*}[t]
+\caption{Residual risks and appropriate next controls}
+\centering\small
+\begin{tabular}{L{13mm}L{54mm}L{54mm}L{43mm}}
+\toprule ID & Residual risk & Current boundary & Next control / release condition\\\midrule
+R1 & In-memory storage loses all accounts and audit history on restart. & Visibly labeled, single-process demo; no silent database fallback. & Use a verified durable PostgreSQL deployment for persistence.\\
+R2 & JSONB aggregate rewrites and audit trust do not scale to large datasets. & Owner-scoped compare-and-swap update; copied-state rollback. & Normalize financial rows; separate audit retention and operator protections.\\
+R3 & Rate limits are process-local; auth's shared bucket can reduce availability. & API/agent/email buckets and bounded tool/body requests. & Trusted gateway, per-IP/distributed limiting, abuse monitoring.\\
+R4 & CSP permits inline framework code/styles. & React escaping, no arbitrary HTML, frame denial. & Per-request nonces and tighter production CSP.\\
+R5 & A same-origin script compromise could read proposal tokens. & SessionStorage, five-minute expiry, exact user/payload binding, single use. & Independent XSS assessment and hardened browser policy.\\
+R6 & No MFA, verified-email flow, recovery, or account-lifecycle policy. & Password hashing, encrypted cookie, revocation and limits. & Reviewed identity provider and verified recovery before real users.\\
+R7 & Model intent selection may be semantically incorrect. & Deterministic values, exact review, no direct model mutation. & Evaluate with a real key and broader intent/adversarial scenarios.\\
+R8 & Local live PostgreSQL, external model, and Docker images were not exercised. & Schema/migration validation; mocked provider boundary; real Python service check. & Verify target deployment and read actual CI results before claiming readiness.\\
+R9 & Inferred bills and anomaly thresholds can misclassify behavior. & Evidence, explicit labels, no fraud/advice claim. & Labeled evaluation, richer recurrence models, user corrections.\\
+R10 & Audit/chat/session arrays and durable demo accounts need retention. & Expiry checked on use; transient demo cap. & Scheduled deletion, retention policy and documented user controls.\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+The register distinguishes implementation controls from deployment work. It supports risk communication in the spirit of NIST AI RMF~\cite{nist}; it is not an assessment against a legal or banking certification standard. No real financial credentials or money should be introduced under the current evaluation scope.
+
+\section{Deployment Review and Sign-Off}
+Before a durable deployment, verify migrations, database recovery, HTTPS origin, persistent session secret, trusted gateway limits, provider availability, and private service connectivity. Re-run ownership and approval tests against the target repository implementation. Review dependency notices and the point-in-time runtime advisory scan. Do not interpret a green test suite as evidence that all operational or legal requirements are satisfied.
+
+\begin{table}[h]
+\caption{Two-member review record to complete}
+\centering\small
+\begin{tabular}{L{19mm}L{25mm}L{25mm}}
+\toprule & Member 1 & Member 2\\\midrule
+Name & \field{23mm} & \field{23mm}\\[2mm]
+Review date & \field{23mm} & \field{23mm}\\[2mm]
+Signature & \field{23mm} & \field{23mm}\\
+\bottomrule
+\end{tabular}
+\end{table}
+Source and evidence: \RepoLink. Blank fields are not an executed signature or an authorship attestation.
+
+\FloatBarrier
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+\end{document}

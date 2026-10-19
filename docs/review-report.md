@@ -1,0 +1,36 @@
+# Source review and cleanup
+
+Reviewed on **19 October 2026**. Scope: project-owned application, Python service, database schema/migration, tests, configuration, scripts, documentation and submission assets. Installed dependencies were assessed through their manifests/lockfile and advisory/license metadata; generated framework output and vendor source were not treated as authored project code.
+
+## Findings corrected
+
+| Finding                                                                                              | Resulting behavior                                                                                                                             | Regression evidence                                        |
+| ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| An unmatched reminder merchant could fall back to the first inferred bill                            | Only a named, matching recurring merchant can produce a reminder proposal; an unknown merchant receives an actionable error                    | Unknown-merchant agent test; existing Netflix browser flow |
+| Summary-only provider calls could render totals for the current month instead of the requested month | The narrative uses the actual selected tool result and its month                                                                               | Historical provider summary regression                     |
+| The fallback ignored explicit YYYY-MM read periods                                                   | Read tools use the requested valid calendar month                                                                                              | Historical deterministic read regression                   |
+| Missing or fractional/negative percentage text could become an unintended default budget             | Supported whole percentages are required; unsupported requests ask for clarification or direct the user to the exact-amount form               | Omitted, fractional and negative percentage cases          |
+| Noninteger monetary operands could escape checking when their sum was an integer                     | Every operand must be a safe integer before aggregation                                                                                        | Fractional-sum regression                                  |
+| Client fetch failures and HTML proxy responses were not consistently actionable                      | A shared client API preserves HTTP status and returns safe network/non-JSON messages; session redirects use status instead of message matching | Client transport, proxy and 401 regressions                |
+| Sign-out could leave an unhandled network rejection                                                  | The UI displays the error and restores the button                                                                                              | Client error boundary plus typed build                     |
+| Old proposal tokens could remain in a tab after switching accounts                                   | Successful demo/login/register clears the prior account's tab-local approval tokens                                                            | Code review; owner-bound API tests remain enforced         |
+| PostgreSQL seed password validation differed from the login byte limit                               | Registration/login/seeding share one UTF-8-aware policy; invalid seeds fail before creating an unusable account                                | Valid and over-byte-limit password regressions             |
+| Mutation timeline duration was a fixed display value                                                 | Timing is measured from the actual operation                                                                                                   | Reviewed source; no fabricated performance claim           |
+| The optional-service status could imply configuration with only a URL                                | Status requires both the service URL and token                                                                                                 | API source review                                          |
+| Unused prior-summary payload/type and duplicate category response added dead data                    | Removed unused response calculation/type; chart comparison still derives its real series                                                       | Existing dashboard/browser checks                          |
+
+Added repository tests require exactly one committed application under concurrent token reuse and complete rollback when a mutation throws after changing its private copy. Both memory and PostgreSQL adapters use this suite; the public CI includes a real PostgreSQL service. CI configuration is not itself a passed run.
+
+## Cleanup and repository preparation
+
+- Removed the one-off layout diagnostic script and redundant generated report preview. Cleared generated test reports, transient Python/type caches and accidentally created empty compilation directories after review. Framework/compiler caches are ignored and never part of the published source.
+- Preserved meaningful evidence: real screenshots, sanitized audit events, test results, the benchmark, an actual short recording, and the implemented monthly report feature.
+- Extracted the browser request helper from the authentication component into a focused client module; consolidated the password validation policy.
+- Added Node version metadata, strengthened environment-file ignores, a CI workflow with read-only repository permissions, issue/PR templates, security/contribution guides, a project rights notice and third-party metadata. No new general open-source license was granted beyond the requested public visibility.
+- Prepared IEEE-style source and compiled PDFs with two blank team-member entries, vector diagrams, actual screenshots and verified references. The original competition PDF is not redistributed. No presentation deck was created.
+
+## Verified scope
+
+The [machine-readable summary](evidence/verification-summary.json) records **61 TypeScript/API checks, 4 Chromium scenarios and 8 Python checks**, all passing locally. Lint, strict type checking, seed generation and production build are rerun after the review fixes, with actual logs retained. The browser recording additionally asserts unchanged complete budgets after rejection and records real approval/audit interactions. Every document page is rendered and visually checked before final packaging.
+
+Known limitations remain disclosed: local PostgreSQL persistence and live OpenAI calls were not exercised, the aggregate store and process-local limits are prototype choices, there is no independent penetration test or real-world advice/algorithm-accuracy study, and the app handles synthetic records only. Read the actual CI run and deployment evidence before making stronger claims. This review identifies and fixes bounded defects; it does not assert that the project has no possible flaws.
