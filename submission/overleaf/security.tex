@@ -76,7 +76,7 @@ R4 & CSP permits inline framework code/styles. & React escaping, no arbitrary HT
 R5 & A same-origin script compromise could read proposal tokens. & SessionStorage, five-minute expiry, exact user/payload binding, single use. & Independent XSS assessment and hardened browser policy.\\
 R6 & No MFA, verified-email flow, recovery, or account-lifecycle policy. & Password hashing, encrypted cookie, revocation and limits. & Reviewed identity provider and verified recovery before real users.\\
 R7 & Model intent selection may be semantically incorrect. & Deterministic values, exact review, no direct model mutation. & Evaluate with a real key and broader intent/adversarial scenarios.\\
-R8 & Local live PostgreSQL, external model, and Docker images were not exercised. & Schema/migration validation; mocked provider boundary; real Python service check. & Verify target deployment and read actual CI results before claiming readiness.\\
+R8 & Local PostgreSQL, live model, target deployment and Docker images remain unverified. & Remote PostgreSQL 17 migration and 61 cases passed; provider mocked; real Python service checked. & Verify target deployment, restart recovery and live provider before claiming readiness.\\
 R9 & Inferred bills and anomaly thresholds can misclassify behavior. & Evidence, explicit labels, no fraud/advice claim. & Labeled evaluation, richer recurrence models, user corrections.\\
 R10 & Audit/chat/session arrays and durable demo accounts need retention. & Expiry checked on use; transient demo cap. & Scheduled deletion, retention policy and documented user controls.\\
 \bottomrule

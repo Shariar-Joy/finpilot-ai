@@ -39,14 +39,14 @@ $startHere = @(
     '',
     'Fill both members identity, institution and contact fields in the LaTeX sources; review eligibility, claims, independence/IP terms and signatures. The blank fields are not signed declarations. Recompile and inspect all four documents after editing.',
     '',
-    'This package uses synthetic financial data. Local PostgreSQL and live paid-model execution were not exercised; consult the repository CI outcome for remote database verification. No hosted application or security certification is claimed.',
+    'This package uses synthetic financial data. Actual remote application/PostgreSQL verification is recorded in evidence/ci-verification.json. Local PostgreSQL, target deployment/restart recovery and live paid-model execution remain unverified. No hosted application or security certification is claimed.',
     '',
     'The supplied rules state a deadline of 20 October 2026, 23:59 Beijing time (21:59 Bangladesh). Check later organizer notices and the accepted upload format before submission.'
 )
 $startHere | Set-Content -LiteralPath (Join-Path $stageDir 'START_HERE.md') -Encoding utf8
 $evidenceDir = Join-Path $stageDir 'evidence'
 New-Item -ItemType Directory -Path $evidenceDir | Out-Null
-foreach ($file in @('demo.webm','demo-recording.json','audit-example.json','verification-summary.json','benchmark.json','dashboard-desktop.png','agent-approved.png')) {
+foreach ($file in @('demo.webm','demo-recording.json','audit-example.json','verification-summary.json','ci-verification.json','benchmark.json','dashboard-desktop.png','agent-approved.png')) {
     Copy-Item -LiteralPath (Join-Path $projectRoot "docs/evidence/$file") -Destination $evidenceDir
 }
 Get-ChildItem -LiteralPath $stageDir -Recurse -File | Sort-Object FullName | ForEach-Object {

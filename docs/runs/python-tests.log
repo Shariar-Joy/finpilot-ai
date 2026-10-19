@@ -10,6 +10,6 @@ test_invalid_calendar_date (test_main.AnalysisTests.test_invalid_calendar_date) 
 test_unauthorized (test_main.AnalysisTests.test_unauthorized) ... ok
 
 ----------------------------------------------------------------------
-Ran 8 tests in 0.039s
+Ran 8 tests in 0.042s
 
 OK

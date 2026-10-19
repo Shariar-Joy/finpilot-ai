@@ -25,6 +25,8 @@ async function chapter(title, description, hold = 7500) {
           "position:fixed;right:24px;bottom:20px;z-index:2147483647;max-width:570px;padding:15px 20px;background:#111827f2;border:1px solid #897bd0;border-radius:10px;pointer-events:none;color:#eef2ff;font:15px/1.6 Segoe UI,sans-serif;box-shadow:0 5px 25px #0005";
         document.body.append(el);
       }
+      // Native modal dialogs render above body overlays in the browser top layer.
+      (document.querySelector("dialog[open]") || document.body).append(el);
       el.replaceChildren();
       const heading = document.createElement("strong");
       heading.textContent = title;

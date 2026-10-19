@@ -51,11 +51,17 @@ Early checks found a JSX closure typo, a budget-update strict-schema mismatch, a
 
 The dependency audit initially reported three high-severity entries through Prisma's `deepmerge-ts` dependency. A package override installs patched 8.x; Prisma generation, schema validation and the production build were rerun successfully. The final runtime audit reports zero. This is a point-in-time advisory check, not a general security guarantee.
 
+## Remote continuous integration
+
+The [successful GitHub run](https://github.com/Shariar-Joy/finpilot-ai/actions/runs/39220992552) verified commit `8fa49cab72e06efcadcd1d36dc2ccaad9f657cc3` on Ubuntu. Its application job passed clean installation, lint, strict types, 61 TypeScript/API tests in memory, 8 Python tests, production build, and 4 Chromium scenarios. Its PostgreSQL 17 job applied the real migration and passed the same 61 TypeScript/API cases against the database, including concurrent approval and copy rollback. Repeating the cases against two adapters does not create extra unique tests. The [observed job/step record](evidence/ci-verification.json) preserves the actual URL, commit and outcomes.
+
+Clean CI exposed missing optional lockfile entries and a byte-order mark in the migration SQL; both were corrected. The browser readiness check also now allows cold route compilation. Target deployment and persistence across a process restart remain unverified.
+
 ## Unverified external capabilities and limitations
 
 `docker compose config --quiet` also passed after the final environment-variable configuration fix; this validates the compose configuration without starting any containers.
 
-- **PostgreSQL connection/migration execution and persistence across restart were not verified here.** Docker CLI 29.7.2 was available, but `docker info` could not reach a running daemon; PostgreSQL CLI was absent. The provided Prisma schema, generated migration and storage implementation were validated without a server. The passing application tests used the explicit in-memory mode. Run the documented migration and repeat tests against your target PostgreSQL before claiming persistent deployment verification.
+- **Local PostgreSQL and restart recovery were not verified.** Docker CLI 29.7.2 was available, but its daemon was offline and the PostgreSQL CLI was absent. The remote PostgreSQL 17 migration and test run above closes the CI connection/atomicity gap. Repeat migration and recovery checks against the intended deployment before claiming that deployment is verified.
 - **Live OpenAI execution was not verified:** no user API key was supplied. Mocked Responses function calls and full deterministic fallback were tested. Model availability, spend and account permissions are external.
 - The local FastAPI integration was exercised directly with installed Python packages; the Docker images themselves were not built because the engine was unavailable.
 - No public deployment, load test, independent penetration test, bank connectivity, actual payment, external notification delivery or regulatory certification is claimed.

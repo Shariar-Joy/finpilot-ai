@@ -20,7 +20,7 @@ flowchart LR
   E -->|Reject| G[Leave finances unchanged and record decision]
 ```
 
-The agent completes a real sandbox state change. It cannot approve its own proposal. Watch the [actual short captioned demo](docs/evidence/demo.webm), inspect the [verification summary](docs/evidence/verification-summary.json), or follow the [five-minute walkthrough](docs/demo-script.md).
+The agent completes a real sandbox state change. It cannot approve its own proposal. Watch the [actual short captioned demo](docs/evidence/demo.webm), inspect the [verification summary](docs/evidence/verification-summary.json) and [successful application/PostgreSQL CI evidence](docs/evidence/ci-verification.json), or follow the [five-minute walkthrough](docs/demo-script.md).
 
 ## Competition paperwork
 

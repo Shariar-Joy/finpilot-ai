@@ -144,6 +144,7 @@ Lint, strict types, seed, build & Passed; exact logs provided\\
 Production Next.js/FastAPI link & Exact totals; missing token: 401\\
 Live paid-provider execution & Not exercised\\
 Local PostgreSQL connection & Not exercised locally\\
+Remote PostgreSQL 17 & Migration + 61 checks passed\\
 \bottomrule
 \end{tabular}
 \label{tab:verification}
@@ -156,7 +157,7 @@ A separate deterministic microbenchmark performs ten warm-up and 100 measured ru
 \section{Limitations and Deployment Conditions}
 Verification checks specific invariants, not arbitrary-language correctness or the absence of all vulnerabilities. The fallback supports bounded finance intents rather than general conversation. Optional model-selected proposals may still be semantically wrong; the user reviews the exact change. No model benchmark, user acceptance study, financial-advice outcome evaluation, or statistical anomaly-quality experiment was conducted.
 
-The local environment lacked a running Docker/PostgreSQL service. Schema generation and validation are not evidence of successful live migration or persistence. PostgreSQL CI is supplied to exercise the same repository invariants on a real service; its actual outcome must be read from the linked workflow, not inferred from configuration. The JSONB aggregate, process-local rate limits, inline-script CSP allowance, session cleanup, and absence of MFA/recovery require further work before use with real customers. A trusted TLS gateway and persistent secrets are deployment requirements. No certification, regulated financial advice, or payment capability is asserted.
+The local environment lacked a running Docker/PostgreSQL service. Remote Ubuntu CI subsequently applied the migration to PostgreSQL 17 and passed the same 61 domain/API cases, including repository concurrency and rollback; the application job also passed build, Python, and browser checks (\VerifiedCI). Repeated adapter runs are not additional unique tests. This does not verify target deployment or restart recovery. The JSONB aggregate, process-local rate limits, inline-script CSP allowance, session cleanup, and absence of MFA/recovery require further work before use with real customers. A trusted TLS gateway and persistent secrets are deployment requirements. No certification, regulated financial advice, or payment capability is asserted.
 
 \section{Conclusion}
 FinPilot demonstrates a complete sandbox task: an expense question leads to source-backed analysis, a deterministic proposal, an explicit decision, and an auditable state transition. The principal result is the implemented separation of language planning, financial computation, and mutation authority. The supplied code, tests, screenshots, and logs make that result inspectable. Further evaluation should prioritize durable deployment verification, broader intent coverage, independent security assessment, and user studies before any real-finance use.

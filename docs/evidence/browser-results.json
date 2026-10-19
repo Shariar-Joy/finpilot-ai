@@ -4,7 +4,7 @@
       "C:\\Program Files\\nodejs\\node.exe",
       "F:\\FinPilot AI\\node_modules\\@playwright\\test\\cli.js",
       "test",
-      "--reporter=line,json"
+      "--reporter=list,json"
     ],
     "configFile": "F:\\FinPilot AI\\playwright.config.ts",
     "rootDir": "F:/FinPilot AI/e2e",
@@ -81,7 +81,7 @@
     "quiet": false,
     "reporter": [
       [
-        "line"
+        "list"
       ],
       [
         "json"
@@ -127,12 +127,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 8353,
+                  "duration": 4281,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-19T07:37:38.174Z",
+                  "startTime": "2026-10-19T08:09:36.589Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -161,12 +161,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 3240,
+                  "duration": 3430,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-19T07:37:46.789Z",
+                  "startTime": "2026-10-19T08:09:40.983Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -195,12 +195,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 4281,
+                  "duration": 4707,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-19T07:37:50.044Z",
+                  "startTime": "2026-10-19T08:09:44.427Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -229,12 +229,12 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 4332,
+                  "duration": 4470,
                   "errors": [],
                   "stdout": [],
                   "stderr": [],
                   "retry": 0,
-                  "startTime": "2026-10-19T07:37:54.346Z",
+                  "startTime": "2026-10-19T08:09:49.148Z",
                   "annotations": [],
                   "attachments": []
                 }
@@ -252,8 +252,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-10-19T07:37:02.265Z",
-    "duration": 56634.882000000005,
+    "startTime": "2026-10-19T08:09:35.797Z",
+    "duration": 17996.435,
     "expected": 4,
     "skipped": 0,
     "unexpected": 0,
