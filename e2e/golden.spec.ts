@@ -4,8 +4,9 @@ async function demo(page: Page) {
   await page.goto("/");
   await page.getByRole("button", { name: "Explore the live demo" }).click();
   await expect(
-    page.getByRole("heading", { name: "Looking good, Alex." }),
+    page.getByRole("heading", { name: "Looking good, Shariar." }),
   ).toBeVisible({ timeout: 20000 });
+  await expect(page.getByText("Shariar Joy", { exact: true })).toBeVisible();
 }
 test("golden demo: evidence, reject unchanged, approve exact budget, audit", async ({
   page,
@@ -107,11 +108,9 @@ test("budget CRUD and recurring reminder approval", async ({ page }) => {
   await page.getByRole("button", { name: "New budget" }).click();
   await page.getByRole("dialog").getByLabel("Category").selectOption("Health");
   await page.getByRole("button", { name: "Confirm & save budget" }).click();
-  const card = page
-    .locator(".budget-card")
-    .filter({
-      has: page.getByRole("heading", { name: "Health", exact: true }),
-    });
+  const card = page.locator(".budget-card").filter({
+    has: page.getByRole("heading", { name: "Health", exact: true }),
+  });
   await expect(card).toBeVisible();
   await card.getByRole("button", { name: "Edit budget" }).click();
   await page

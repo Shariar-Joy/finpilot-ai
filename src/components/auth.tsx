@@ -91,7 +91,7 @@ export function Auth({ register = false }: { register?: boolean }) {
                 minLength={2}
                 maxLength={60}
                 required
-                placeholder="Alex Morgan"
+                placeholder="Shariar Joy"
               />
             </label>
           )}

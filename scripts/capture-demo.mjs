@@ -13,7 +13,7 @@ try {
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto(base);
   await page.getByRole("button", { name: "Explore the live demo" }).click();
-  await page.getByRole("heading", { name: "Looking good, Alex." }).waitFor();
+  await page.getByRole("heading", { name: "Looking good, Shariar." }).waitFor();
   await page.locator(".recharts-sector").first().waitFor({ state: "visible" });
   await page.mouse.move(1400, 10);
   await page.screenshot({
@@ -67,7 +67,7 @@ try {
     ),
   );
   await page.goto(`${base}/dashboard`);
-  await page.getByRole("heading", { name: "Looking good, Alex." }).waitFor();
+  await page.getByRole("heading", { name: "Looking good, Shariar." }).waitFor();
   await page.setViewportSize({ width: 390, height: 844 });
   await page.locator(".recharts-sector").first().waitFor({ state: "visible" });
   await page.screenshot({

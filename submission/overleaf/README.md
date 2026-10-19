@@ -15,4 +15,4 @@ Change Overleaf's main document to compile the other required paperwork:
 
 The report contains actual application screenshots and original vector architecture/approval diagrams. It is formatted using IEEE conventions; no IEEE publication, acceptance, logo, copyright number or endorsement is claimed. The competition PDF itself is not redistributed.
 
-Read the main repository README, requirements crosswalk, execution evidence and review report. The presentation is intentionally excluded; use the separate Gamma prompt. A script or screenshots are not an actual demo video.
+Read the main repository README, requirements crosswalk and execution evidence. Optional presentation-preparation notes are archived outside the final submission; no deck is included. The complete judge-facing submission contains the actual captioned demo recording, metadata and audit records. The standalone Overleaf ZIP contains the editable papers and their figures.

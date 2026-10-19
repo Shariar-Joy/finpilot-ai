@@ -1,0 +1,74 @@
+\documentclass[conference,onecolumn,a4paper]{IEEEtran}
+\input{shared.tex}
+\title{FinPilot AI Competition Submission Cover and Requirements Checklist}
+\teamAuthors
+\begin{document}
+\maketitle
+\section{Entry Identification}
+\noindent\begin{tabularx}{\textwidth}{L{43mm}X}
+Project & FinPilot AI --- Your money, understood.\\[1mm]
+Competition & 2026 Shenzhen International FinTech Competition, International Track\\[1mm]
+Selected topic & Topic A: Personal Finance Assistant\\[1mm]
+System scope & Synthetic sandbox; budgeting, bill analysis, spending insights and approved agent actions\\[1mm]
+Repository & \RepoLink\\[1mm]
+Team name / registration ID & \field{95mm}\\[2mm]
+Contact email / phone & \field{95mm}\\
+\end{tabularx}
+
+\section{Two-Member Team Information to Complete}
+\noindent\begin{tabularx}{\textwidth}{L{38mm}XX}
+\toprule Field & Member 1 & Member 2\\\midrule
+Full name & \field{55mm} & \field{55mm}\\[3mm]
+Institution & \field{55mm} & \field{55mm}\\[3mm]
+Institution country & \field{55mm} & \field{55mm}\\[3mm]
+Nationality & \field{55mm} & \field{55mm}\\[3mm]
+Degree / study year & \field{55mm} & \field{55mm}\\[3mm]
+Email & \field{55mm} & \field{55mm}\\[3mm]
+Contribution to confirm & \field{55mm} & \field{55mm}\\[3mm]
+Signature / date & \field{55mm} & \field{55mm}\\
+\bottomrule
+\end{tabularx}
+\medskip
+No identity, enrollment, nationality, contribution or signature has been asserted. The supplied appendix specifies 2--5 full-time students at eligible overseas institutions and at least 60\% non-Chinese nationals. For a two-person team, meeting a threshold of at least 60\% requires both members to be non-Chinese nationals. Eligibility, single-team participation and final track assignment must be confirmed with the organizer using the actual team details~\cite{competition}.
+
+\section{Submission Materials and Status}
+\noindent\begin{tabularx}{\textwidth}{L{35mm}L{73mm}X}
+\toprule Requirement & Prepared artifact & Final action\\\midrule
+Technical documentation & IEEE-style technical paper: architecture, algorithms, security design and evaluation & Fill two author blocks; review claims\\[2mm]
+Security self-assessment & Separate permission-tier/control/risk report & Team review and blank sign-off fields\\[2mm]
+Source code & GitHub source, README, migrations, setup/deployment guide and tests & Confirm repository access for judges\\[2mm]
+Execution evidence & Actual sandbox audit JSON, screenshots, command logs and reproduction guide & Attach artifacts and actual recording if required\\[2mm]
+Presentation & Separate Gamma generation prompt only; no deck prepared & Create and review a presentation of at most 10 minutes\\[2mm]
+Demo video & Actual \DemoSeconds{}-second captioned WebM and reproduction script & Review the clip; confirm accepted upload format\\
+\bottomrule
+\end{tabularx}
+
+\section{Requirements Crosswalk}
+Topic A's budgeting requirement maps to monthly category CRUD, usage thresholds, server-computed recommendations and approved next-month proposals. Bill analysis maps to recurring-payment inference with source evidence and in-app reminders. Spending insights map to same-period comparisons, category charts and transparent unusual-purchase flags. Task execution is demonstrated by an actual accepted budget update and a separate rejected proposal with unchanged financial arrays. Security evidence includes user ownership, exact approval binding, replay/tamper/expiry rejection, concurrency checks and sanitized decisions. Innovation and interaction are supported by visible tools, citations, exact review, a deterministic no-key path and accessible responsive views. These mappings are evidence references, not predicted scores.
+
+\section{Deadline and Submission Review}
+The supplied appendix gives the deadline as \textbf{20 October 2026, 23:59 Beijing time (UTC+8)}, equivalent to \textbf{20 October 2026, 21:59 in Bangladesh (UTC+6)}. English is required. Updates before the deadline are permitted and the latest version prevails according to the supplied rules. Confirm any later organizer notice and the actual registration portal before submitting. The appendix requires at least one finalist to attend in person and describes the organizer's IP/independence terms; those obligations require review by the team~\cite{competition}.
+
+\begin{itemize}
+\item[$\square$] Complete both members' identity and enrollment/nationality checks; register only once per participant.
+\item[$\square$] Review AI-assisted code/document preparation against the organizer's independence and disclosure rules. Do not sign an inaccurate originality or authorship declaration.
+\item[$\square$] Check third-party component/template licenses and attribution; no original competition PDF is redistributed by the repository.
+\item[$\square$] Reproduce the keyless task and inspect exact budgets, source references and actual audit events.
+\item[$\square$] Distinguish local tests, remote CI, mocked provider tests and unverified deployment capabilities in the submitted claims.
+\item[$\square$] Create the requested presentation separately; verify timing and remove invented metrics or visual claims.
+\item[$\square$] Review the supplied real recording and clarify any remaining format requirement. Attach the correct files and verify final upload access.
+\end{itemize}
+
+\section{Declaration Fields for the Team}
+I/we have reviewed the source, evidence, third-party notices, and statements in the submission, and will complete the organizer's official declarations using accurate information. The following fields are intentionally unexecuted:
+\begin{center}
+\begin{tabular}{L{74mm}L{74mm}}
+Member 1 name: \field{42mm} & Member 2 name: \field{42mm}\\[5mm]
+Signature/date: \field{45mm} & Signature/date: \field{45mm}
+\end{tabular}
+\end{center}
+This cover is a preparation aid, not an organizer-issued registration form or legal attestation.
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+\end{document}

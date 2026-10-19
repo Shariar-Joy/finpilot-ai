@@ -3,3 +3,4 @@
 *.pdf binary
 *.webm binary
 *.zip binary
+archive/2026-10-19-pre-simplification/** -text

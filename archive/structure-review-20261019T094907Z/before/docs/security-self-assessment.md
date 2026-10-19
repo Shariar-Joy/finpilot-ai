@@ -1,0 +1,35 @@
+# Security self-assessment
+
+Scope: synthetic personal finance demonstration. This is an implementation review and test record, not certification, penetration-test attestation or a claim of bank-grade security.
+
+| Control          | Implementation and boundary                                                                                                                                                                                                       |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| User isolation   | Authenticated session identity selects the ledger. Transaction, budget, reminder and approval IDs are resolved only inside it. Cross-user read/write API tests are provided.                                                      |
+| Authentication   | bcrypt password hashing, 12-character minimum, maximum 72 UTF-8 bytes; encrypted iron-session cookie; random 256-bit token hash stored server-side; eight-hour expiry and logout revocation. Demo accounts use random passwords.  |
+| Cookies          | HttpOnly, SameSite=Lax, Path=/; Secure whenever APP_ORIGIN is HTTPS. Durable production API requires HTTPS APP_ORIGIN and a persistent SESSION_SECRET.                                                                            |
+| CSRF             | Every write requires the exact configured origin (or direct Host origin for local development). JSON content type is mandatory; no wildcard CORS. Forwarded Host headers are not trusted.                                         |
+| Input boundaries | Zod runtime schemas, allowed fields, string/amount bounds, valid calendar dates, integer money and safe aggregate totals. Read request bodies incrementally, capped at 768 KB.                                                    |
+| CSV              | 512 KB / 2,000 rows; schema validation before commit, revalidated within mutation; deterministic deduplication; no arbitrary file writes or executable content.                                                                   |
+| Model authority  | Model calls are allowlisted and schema validated. No direct mutation tools or secrets are exposed. Currency calculations and approvals remain server-owned. Invalid provider plans fall back safely.                              |
+| Approval         | One-time random token, hashed storage, exact canonical payload hash, user binding, five-minute expiry, atomic consumption; replay/tamper/expiry/cross-user and rejection tests.                                                   |
+| Concurrency      | Compare-and-swap ledger version updates retry up to five times; memory uses a mutex. A rejected/failed mutation never partially writes financial arrays.                                                                          |
+| Audit            | Actor, action, decision, timestamp, correlation ID, small explicit metadata. Approval/session tokens, passwords and model keys are excluded. Denied approval attempts are logged.                                                 |
+| Untrusted text   | React escapes merchant/chat text; no dangerouslySetInnerHTML. Merchant fields are data, never instructions. Model planning receives no uploaded financial records.                                                                |
+| Exports          | Formula-prefixed merchant cells are apostrophe-neutralized; exports require authentication, are user-scoped and use Cache-Control:no-store.                                                                                       |
+| Limits           | Per-process API limit 120/min per user, agent 20/min, auth 120/min globally plus 10/15min per email; max eight model tools, 12-second model timeout and 20-second execution guard. Memory demo capacity is 500 users per process. |
+| FastAPI          | Private service token, constant-time token comparison; strict integer/body schemas; 2 MB / 10,000 records; no financial writes; no browser CORS. Next.js timeout is three seconds.                                                |
+| Headers          | CSP, frame denial, nosniff, same-origin referrer, disabled camera/microphone/geolocation. Dynamic API responses use no-store.                                                                                                     |
+| Secrets          | Server-only environment variables; .env ignored. Production persistence requires a 32+ character session secret. Local demo uses an ephemeral process secret and visibly ephemeral storage.                                       |
+
+## Known limits and follow-up work
+
+- Current auth is an application implementation using mature iron-session encryption and bcrypt, rather than a hosted identity provider. No email verification, MFA, password recovery, breach checking or account deletion workflow. Use a reviewed identity provider for real customers.
+- Rate limits and demo capacity are process-local and intentionally do not trust arbitrary X-Forwarded-For. Add a trusted gateway with per-IP and distributed limits before internet-scale use. Auth's global bucket can itself limit availability under abuse.
+- JSONB ledger/audit storage is protected by application ownership and atomic updates, not PostgreSQL row-level-security policies or an independent immutable audit system. DB administrators remain trusted. Audit/chat arrays and durable demo accounts need lifecycle/retention policies for long-running use.
+- CSP permits inline framework scripts/styles; production should adopt per-request nonces and a tighter policy. HSTS/TLS termination and trusted host handling belong at the deployment gateway. There is no attachment scanning because only validated CSV text is accepted.
+- The persistent PostgreSQL path must be tested against the deployment database; local schema validation alone is not proof of a live connection. No real bank/payment credentials are accepted by any product flow.
+- Live OpenAI execution is optional and requires your credential; mocked provider boundary tests do not verify account access or model behavior. Model-selected proposals can be semantically wrong even when structurally valid; the exact review and explicit approval remain required.
+- Approval tokens in the originating tab's sessionStorage are exposed to a same-origin script compromise. They expire quickly and cannot cross users/payloads; stronger XSS defenses remain relevant.
+- In-memory mode loses all state on restart, including audit history and sessions. Expired database sessions/approvals are checked on use but not automatically purged. Use a scheduled cleanup policy for a durable deployment.
+
+See [execution evidence](execution-evidence.md) for actual test outcomes, the dependency audit date, and unverified external capabilities.

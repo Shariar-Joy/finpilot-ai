@@ -1,20 +1,29 @@
-# FinPilot AI submission package
+# FinPilot AI submission guide
 
-The competition appendix was inspected in full. It requires technical documentation, a security self-assessment, source/deployment instructions/tests, and non-on-chain sandbox evidence. IEEE formatting is used at the user's request; it is not a publication or acceptance claim.
+The canonical deliverables are the four [compiled PDFs](../output/pdf), editable [Overleaf source](overleaf/README.md), and authentic [execution evidence](../docs/execution-evidence.md). IEEE formatting is a presentation choice, not a publication or acceptance claim. Both paper author blocks and the two-member checklist remain blank. The application demo is named **Shariar Joy**.
 
-| Deliverable                                                                     | Editable source                           | Compiled output                                                  |
-| ------------------------------------------------------------------------------- | ----------------------------------------- | ---------------------------------------------------------------- |
-| Technical paper — architecture, algorithms, security, evaluation and references | [main.tex](overleaf/main.tex)             | [Technical paper](../output/pdf/01-technical-paper.pdf)          |
-| Security self-assessment — permission tiers, controls, tests, risk register     | [security.tex](overleaf/security.tex)     | [Security report](../output/pdf/02-security-self-assessment.pdf) |
-| Execution evidence — actual task, reproduction, recording, verification limits  | [evidence.tex](overleaf/evidence.tex)     | [Execution report](../output/pdf/03-execution-evidence.pdf)      |
-| Cover and team/submission checklist                                             | [submission.tex](overleaf/submission.tex) | [Cover/checklist](../output/pdf/04-submission-checklist.pdf)     |
+| Required material | Canonical location |
+| --- | --- |
+| Technical paper: architecture, algorithms, security and evaluation | [main.tex](overleaf/main.tex) · [PDF](../output/pdf/01-technical-paper.pdf) |
+| Security self-assessment: permission tiers and known risks | [security.tex](overleaf/security.tex) · [PDF](../output/pdf/02-security-self-assessment.pdf) |
+| Execution evidence and reproduction guide | [evidence.tex](overleaf/evidence.tex) · [PDF](../output/pdf/03-execution-evidence.pdf) |
+| Team cover and requirements checklist | [submission.tex](overleaf/submission.tex) · [PDF](../output/pdf/04-submission-checklist.pdf) |
+| Current source, setup, migrations and tests | Repository root; exact local snapshot exported by the packaging script |
+| Actual sandbox recording, audit decisions and verification | [Recording](../docs/evidence/demo.webm) · [Audit](../docs/evidence/audit-example.json) · [Results](../docs/evidence/verification-summary.json) |
 
-Upload [FinPilot_AI_Overleaf.zip](../output/FinPilot_AI_Overleaf.zip) to Overleaf as a new project. Use pdfLaTeX with `main.tex` as the main document; choose the other `.tex` files to compile each companion. See [Overleaf instructions](overleaf/README.md). The [complete paperwork/evidence ZIP](../output/FinPilot_AI_Submission.zip) includes the PDFs, editable source, Gamma prompt and actual recording/evidence.
+To verify and regenerate, run from the repository root:
 
-Both member names, institutions and emails are blank in `shared.tex`; the cover has extra identity, nationality, enrollment, contribution and signature fields. Complete them using actual information. These are unsigned preparation fields, not an official registration form or a claim that eligibility is satisfied.
+```powershell
+npm run verify
+# Run capture-demo.mjs and record-demo.mjs against an isolated demo server when refreshing UI evidence.
+node scripts/collect-evidence.mjs
+powershell -File scripts/build-papers.ps1
+# Render and visually check every PDF page before packaging.
+powershell -File scripts/package-submission.ps1
+```
 
-[Actual short recording](../docs/evidence/demo.webm) · [Recording metadata](../docs/evidence/demo-recording.json) · [Actual test summary](../docs/evidence/verification-summary.json) · [Audit events](../docs/evidence/audit-example.json) · [Benchmark scope/data](../docs/evidence/benchmark.json) · [Gamma prompt](../docs/gamma-presentation-prompt.md)
+The generated **submission/final** folder contains only four PDFs, an exact current source ZIP, selected authentic evidence, START_HERE.md and SHA256SUMS.txt. Open `submission/final/START_HERE.md` first. The source ZIP includes the editable papers, complete essential docs, test output and configuration; it excludes secrets, dependencies, caches and optional historical materials. After extracting the source ZIP, run the packaging script to recreate the generated judge-facing folder.
 
-No deck has been created. The supplied video has descriptive captions and no narration; review the accepted upload format before submitting. The supplied appendix says the deadline is **20 October 2026, 23:59 Beijing / 21:59 Bangladesh**, subject to any later organizer notice. For a two-member team, the appendix's at-least-60% non-Chinese requirement means both members must be non-Chinese. Check all eligibility and independence/IP requirements rather than treating blank forms as declarations.
+The generated **output/packages** folder contains FinPilot_AI_Overleaf.zip for direct Overleaf upload, FinPilot_AI_Submission.zip containing the complete judge-facing export, and archive checksums. Generated exports are ignored by Git and reproducible. The canonical source, evidence and PDFs remain versioned.
 
-To rebuild locally, install Tectonic or use the ignored local compiler under `.tools`, run `node scripts/collect-evidence.mjs` after actual tests, then `powershell -File scripts/build-papers.ps1`. To regenerate figures/recording, run the documented capture scripts against the app. The final PDFs were compiled and every page visually reviewed; local compiler caches and page-preview PNGs are excluded from the repository.
+Historical logs, the previous review report, the optional Gamma prompt and prior ZIPs are archived outside the primary submission. No presentation deck is created or bundled. Fill both members' actual identity/enrollment/contact fields, review the requirements and accepted upload formats, and check the organizer's latest instructions before submitting. The cover is an unsigned preparation aid, not an official registration form.

@@ -4,5 +4,7 @@ package-lock.json
 test-results
 playwright-report
 docs/evidence
-docs/runs
+archive
+output
+submission/final
 .tools

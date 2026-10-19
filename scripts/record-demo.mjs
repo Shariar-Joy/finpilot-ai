@@ -47,7 +47,7 @@ try {
     4500,
   );
   await page.getByRole("button", { name: "Explore the live demo" }).click();
-  await page.getByRole("heading", { name: "Looking good, Alex." }).waitFor();
+  await page.getByRole("heading", { name: "Looking good, Shariar." }).waitFor();
   await chapter(
     "1 · Understand the financial picture",
     "The dashboard calculates income, spending, savings and category totals from 90 days of synthetic records.",

@@ -1,71 +1,58 @@
 # Execution evidence
 
-Verified on **19 October 2026 (Asia/Dhaka)** in the supplied Windows workspace. These results come from actual commands and browser runs; no hosted application deployment is claimed; source publication is tracked separately.
+## Current local verification
 
-Environment: Node.js v24.13.0, npm 11.6.2, Python 3.14.2, Next.js 16.4.2, Prisma Client/CLI 6.19.3, Vitest 4.1.12, Playwright Chromium. The Python environment already supplied FastAPI 0.138.2, uvicorn 0.49.0 and httpx 0.28.1. Package-lock.json records the exact npm dependency tree.
+Executed on **19 October 2026 (Asia/Dhaka)** in the supplied Windows workspace. The full suite was rerun during the structural review, without changing application features. The current result is linked to one actual verification run; it is not inferred from CI configuration or old logs. The existing screenshots, recording, fixed-seed benchmark and historical integration/CI records retain their original provenance.
 
-## Final checks
+Run: 2026-10-19T09:50:52.006Z to 2026-10-19T09:51:38.784Z (UTC). Scope: Local isolated memory demo; no database or paid model. Browser server on port 3100. Separate Next.js output is under .next/verification; the existing port-3000 server was not reused or stopped.
 
-| Actual command                                                                             | Outcome                                                                                                        | Raw output                                                                 |
-| ------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| `npm install --offline=false --no-audit --no-fund`                                         | Dependencies installed and Prisma Client generated                                                             | Executed in the work session; lockfile retained                            |
-| `npm run lint`                                                                             | PASS, no warnings/errors                                                                                       | [lint.log](runs/lint.log)                                                  |
-| `npm run typecheck`                                                                        | PASS, TypeScript strict                                                                                        | [typecheck.log](runs/typecheck.log)                                        |
-| `npm run test`                                                                             | PASS, **61 tests in 5 files**                                                                                  | [unit-results.json](evidence/unit-results.json)                                                  |
-| `npm run seed`                                                                             | PASS, **134 synthetic transactions** for the current 90-day seed; explicitly no CLI persistence in memory mode | [seed.log](runs/seed.log)                                                  |
-| `npm run build`                                                                            | PASS, optimized production build and generated route manifest                                                  | [build.log](runs/build.log)                                                |
-| `npm run test:e2e`                                                                         | PASS, **4 Chromium browser tests**                                                                             | [browser-results.json](evidence/browser-results.json)                                          |
-| `python -m unittest discover -s services/analytics -v`                                     | PASS, **8 tests**                                                                                              | [python-tests.log](runs/python-tests.log)                                  |
-| `npm audit --omit=dev --json --offline=false`                                              | PASS, **0 reported runtime vulnerabilities** on this date                                                      | [dependency-audit.json](runs/dependency-audit.json)                        |
-| `npx prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script` | Generated the initial PostgreSQL migration                                                                     | [migration SQL](../prisma/migrations/20261019000000_initial/migration.sql) |
-| `npx prisma validate` with a nonconnecting placeholder DATABASE_URL                        | PASS, schema valid                                                                                             | Executed in the work session; no connection was attempted                  |
-| `npx prisma format`                                                                        | PASS                                                                                                           | Schema retained                                                            |
-| `npm run dev`                                                                              | PASS, served local app on 127.0.0.1:3000                                                                       | Used for browser tests and evidence capture                                |
-| `npm run start -- --port 3001` with explicit ephemeral mode and Python service env         | PASS, actual production server started                                                                         | Used for service smoke test                                                |
-| `python -m uvicorn main:app --host 127.0.0.1 --port 8000 --no-access-log`                  | PASS, actual local FastAPI service started                                                                     | Used for service smoke test                                                |
-| `node scripts/verify-services.mjs`                                                         | PASS, production Next.js totals agree exactly with FastAPI; missing service token rejected with 401            | [service-integration.log](runs/service-integration.log)                    |
+| Check | Actual outcome | Raw output |
+| --- | --- | --- |
+| Lint | PASS | [lint.log](evidence/checks/lint.log) |
+| Strict typecheck | PASS | [typecheck.log](evidence/checks/typecheck.log) |
+| TypeScript/domain/API unit tests | 61 passed | [unit.log](evidence/checks/unit.log) |
+| Chromium browser scenarios | 4 passed | [browser.log](evidence/checks/browser.log) |
+| Python FastAPI tests | 8 passed | [python-tests.log](evidence/checks/python-tests.log) |
+| Production build | PASS | [build.log](evidence/checks/build.log) |
+| Synthetic seed validation | PASS | [seed.log](evidence/checks/seed.log) |
 
-`scripts/verify.ps1` ran lint, typecheck, unit/API tests, seed, production build, E2E and Python tests sequentially and saved those raw logs. PowerShell may format native stderr warnings as `NativeCommandError` records even when commands return 0; the script checks actual exit codes. The seed runner warns that no `.env` exists and continues in explicit demo behavior. Python's current Starlette test adapter emits an httpx deprecation warning; its eight tests still pass. Playwright emits a NO_COLOR/FORCE_COLOR environment warning.
+All requested checks passed: **61 TypeScript/API tests in 5 files, 4 browser scenarios and 8 Python tests**. There are no outstanding failing checks. The seed contained 134 synthetic transactions; the memory-mode CLI does not persist a named account.
 
-## Behaviors proved by tests
+[Machine-readable check outcomes](evidence/checks/check-results.json) ? [Verification summary](evidence/verification-summary.json) ? [Unit output](evidence/unit-results.json) ? [Browser output](evidence/browser-results.json)
 
-- Exact decimal parsing, cent rounding, integer overflow checks, calendar validation, month shifts, monthly totals and budget usage.
-- Synthetic seed, monthly recurrence evidence and month-end clamping, unusual-spending thresholds and earlier-only baselines.
-- CSV quotes/schema/batch failure, existing/intra-batch duplicate detection, preview without writes, explicit import confirmation, actual import and idempotent re-import; formula-neutralized export.
-- Real Request/Response API authentication, registration/login/logout revocation, cross-origin rejection, per-user transaction/budget ownership and isolation.
-- Exact-payload approval binding, wrong tokens, tampering, expiry, cross-user use, replay, valid acceptance and rejection without financial changes.
-- Server-side tool invocation, provider-selected tools using mocked Responses output, invalid/oversized provider plans and provider failure fallback. No live paid provider request was made.
-- Browser golden scenario: tool results and transaction evidence → rejection and unchanged budgets → second proposal → approval → exact saved next-month limit → approved/rejected audit events.
-- Browser import validation/preview/deduplication/confirmation/category editing/PDF download; budget create/edit/delete; Netflix reminder proposal/approval/completion; mobile navigation, overflow, Escape and light theme.
-- FastAPI strict integer validation, bad dates, duplicate IDs, extra fields, body limits, private token and exact arithmetic; live production Next.js/Python agreement.
+The browser suite exercises approval/rejection and exact budget state, CSV validation/deduplication/category editing/report exports, budget CRUD and bill-reminder approval/completion, and mobile navigation/theme/dialog behavior. It now also checks that the demo account displays **Shariar Joy**. Registered-user behavior and financial calculations were not redesigned.
 
-## Captured artifacts
+Non-fatal warnings from Node color settings and the installed Starlette TestClient/httpx integration remain in the raw logs. They did not fail any check. No dependencies were upgraded during this structural cleanup.
 
-[Desktop dashboard](evidence/dashboard-desktop.png), [mobile dashboard](evidence/dashboard-mobile.png), [agent proposal](evidence/agent-proposal.png), [approved agent result](evidence/agent-approved.png), [light-theme settings](evidence/settings-light.png), and [sanitized actual audit events](evidence/audit-example.json) are generated by `node scripts/capture-demo.mjs`. The sample monthly PDF is an actual authenticated report download. Capture scripts fail on browser page errors. Screenshots contain synthetic data only; approval tokens/cookies are excluded from captured logs.
+## Actual captures and recording
 
-The report was rendered with portable Poppler 26.09.0 (`pdftoppm -r 110 -png -singlefile`) and visually inspected: one A4 page with readable totals, category amounts and footer, without clipping or overlaps. `pdfinfo` confirmed one page, PDF 1.7, no JavaScript or form fields. Poppler emitted missing Symbol/ArialUnicode display-font warnings; the report uses embedded Helvetica and rendered correctly. The temporary PNG was inspected and removed after QA. Portable QA tooling is ignored under `.tools`; it is not an application dependency.
+[Desktop dashboard](evidence/dashboard-desktop.png) ? [Mobile dashboard](evidence/dashboard-mobile.png) ? [Agent proposal](evidence/agent-proposal.png) ? [Approved result](evidence/agent-approved.png) ? [Light-theme settings](evidence/settings-light.png)
 
-## Corrections during verification
+[Actual monthly PDF export](evidence/monthly-summary.pdf) ? [Sanitized audit decisions](evidence/audit-example.json) ? [Real demo recording](evidence/demo.webm) ? [Recording metadata](evidence/demo-recording.json)
 
-Early checks found a JSX closure typo, a budget-update strict-schema mismatch, a test type-narrowing issue, a production configuration check running at build import time, local Next.js Host/origin normalization, a React Strict Mode dialog close-event race, a screen-reader table label leaking mobile overflow, and ambiguous E2E locators. These were corrected before the final passing run. Early screenshots were refreshed after disabling chart entry animation for consistent capture.
+The refreshed **81-second** captioned WebM records actual Chromium interactions against the isolated production build. It has no audio narration. Its assertions require the exact approved budget to be saved, a separate rejection to leave the complete budget array unchanged, and no browser page errors. The capture script independently saved the real authenticated monthly PDF and actual sanitized audit events, with no page errors.
 
-The dependency audit initially reported three high-severity entries through Prisma's `deepmerge-ts` dependency. A package override installs patched 8.x; Prisma generation, schema validation and the production build were rerun successfully. The final runtime audit reports zero. This is a point-in-time advisory check, not a general security guarantee.
+Still captures and the video use separate fresh synthetic accounts. Their random transaction/proposal IDs need not match. The screenshots and video show Shariar Joy as a demo display name, not a claim about real finances or paper authorship. The two paper-author identity fields remain blank.
 
-## Remote continuous integration
+The temporary evidence-server launcher initially needed a Windows file-URL correction; after that setup correction, capture and recording succeeded. No application feature change was needed for that launcher issue.
 
-The [successful GitHub run](https://github.com/Shariar-Joy/finpilot-ai/actions/runs/39220992552) verified commit `8fa49cab72e06efcadcd1d36dc2ccaad9f657cc3` on Ubuntu. Its application job passed clean installation, lint, strict types, 61 TypeScript/API tests in memory, 8 Python tests, production build, and 4 Chromium scenarios. Its PostgreSQL 17 job applied the real migration and passed the same 61 TypeScript/API cases against the database, including concurrent approval and copy rollback. Repeating the cases against two adapters does not create extra unique tests. The [observed job/step record](evidence/ci-verification.json) preserves the actual URL, commit and outcomes.
+## Historical external verification
 
-Clean CI exposed missing optional lockfile entries and a byte-order mark in the migration SQL; both were corrected. The browser readiness check also now allows cold route compilation. Target deployment and persistence across a process restart remain unverified.
+The preserved [successful PostgreSQL/application CI run](https://github.com/Shariar-Joy/finpilot-ai/actions/runs/39220992552) verified the earlier commit `8fa49cab72e06efcadcd1d36dc2ccaad9f657cc3`. It applied a real PostgreSQL 17 migration and ran the same 61 domain/API cases against PostgreSQL, including concurrency and rollback; its application job also passed memory/Python/browser checks and build. [Observed CI metadata](evidence/ci-verification.json) records that exact run. It is historical evidence, not a newly executed remote check of this uncommitted cleanup. Repeated adapter runs are not additional unique tests.
 
-## Unverified external capabilities and limitations
+The [earlier production Next.js/FastAPI integration record](evidence/service-integration.log) reports matching integer totals and missing-token rejection with 401. The [preserved runtime advisory scan](evidence/dependency-audit.json) reported zero runtime vulnerabilities at its recorded time; it was not rerun in this cleanup and is not a security guarantee. These authentic records were retained from the earlier execution.
 
-`docker compose config --quiet` also passed after the final environment-variable configuration fix; this validates the compose configuration without starting any containers.
+The [fixed-seed benchmark](evidence/benchmark.json) is also retained unchanged. Its ten warm-ups and 100 measured runs cover in-process deterministic agent execution only, excluding seed construction, HTTP, browser rendering, database and LLM. No end-to-end latency or model-performance comparison is claimed.
 
-- **Local PostgreSQL and restart recovery were not verified.** Docker CLI 29.7.2 was available, but its daemon was offline and the PostgreSQL CLI was absent. The remote PostgreSQL 17 migration and test run above closes the CI connection/atomicity gap. Repeat migration and recovery checks against the intended deployment before claiming that deployment is verified.
-- **Live OpenAI execution was not verified:** no user API key was supplied. Mocked Responses function calls and full deterministic fallback were tested. Model availability, spend and account permissions are external.
-- The local FastAPI integration was exercised directly with installed Python packages; the Docker images themselves were not built because the engine was unavailable.
-- No public deployment, load test, independent penetration test, bank connectivity, actual payment, external notification delivery or regulatory certification is claimed.
+## Reproduction and limits
 
-Use [demo-script.md](demo-script.md) for the exact presentation path and [README](../README.md) for reproducible setup.
+Run npm run verify to execute the complete isolated local suite. Logs and exit codes are written to docs/evidence/checks; the runner continues to report every check if one fails and exits nonzero for any failure. FINPILOT_TEST_PORT can select another free port. Run node scripts/collect-evidence.mjs only after successful verification and current captures; it rejects failed or stale test output. See [README](../README.md) for individual commands and environment setup.
 
-The subsequent source review added regression and atomicity checks. The current machine-readable summary records 61 TypeScript/API cases, 4 Chromium scenarios and 8 Python cases, all passing. See [review-report.md](review-report.md), [verification-summary.json](evidence/verification-summary.json), the real [demo recording](evidence/demo.webm), and [recording metadata](evidence/demo-recording.json). Fixed-seed microbenchmark values and their limited scope are in [benchmark.json](evidence/benchmark.json). The IEEE paperwork uses these executed values; no live model or local database result has been inferred.
+- Live paid OpenAI calls remain unverified; provider tests use mocks and the real keyless agent completes the demo task.
+- This local cleanup did not start PostgreSQL or rerun database/restart-recovery checks. The earlier remote run above has its own exact scope.
+- No hosted deployment, bank connection, money transfer, external notification, load test, independent penetration test or regulatory certification is claimed.
+- Memory mode loses state on process restart. PostgreSQL aggregate storage, process-local rate limits, identity and retention hardening remain documented prototype limitations.
+
+Historical logs, prior review/Gamma material, old packages and original evidence/paper versions are preserved under archive/2026-10-19-pre-simplification with a SHA-256 manifest. The later structure-review snapshot preserves the pre-review working files, decision table and evidence before this verification refresh. Current evidence and canonical paper paths remain available. Optional history is excluded from the generated judge export.
+
+See the [architecture](architecture.md), [algorithms](algorithms.md), [security self-assessment](security-self-assessment.md), [requirements crosswalk](competition-requirements.md), [demo script](demo-script.md) and [submission guide](../submission/README.md).

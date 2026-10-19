@@ -11,5 +11,8 @@ export default defineConfig([
     "test-results/**",
     "next-env.d.ts",
     ".tools/**",
+    "archive/**",
+    "output/**",
+    "submission/final/**",
   ]),
 ]);

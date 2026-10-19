@@ -1,0 +1,50 @@
+[
+  {
+    "id": "cfa5022d-cbda-46a1-adb9-85a0245da61c",
+    "actor": "414f2ce8-498a-4dff-96c9-56458703db49",
+    "action": "apply_budget_change",
+    "decision": "approved",
+    "correlationId": "c17e7b09-d060-496d-ba29-55657bbf0e44",
+    "timestamp": "2026-10-19T09:10:57.324Z",
+    "metadata": {
+      "proposalId": "5e93d604-3a3f-420b-99b7-74a2a05d10ff",
+      "payloadHash": "e51dd234439cefd342d4e87eb91f6c020d6dc430987db9c0fd5ee2e93e09a181"
+    }
+  },
+  {
+    "id": "4ec9bdaf-3f13-48ff-a727-344fc27719bc",
+    "actor": "414f2ce8-498a-4dff-96c9-56458703db49",
+    "action": "propose_budget_change",
+    "decision": "proposed",
+    "correlationId": "87a9584e-fc7f-47ca-abbc-49ffb2241ebe",
+    "timestamp": "2026-10-19T09:10:56.371Z",
+    "metadata": {
+      "proposalId": "5e93d604-3a3f-420b-99b7-74a2a05d10ff",
+      "payloadHash": "e51dd234439cefd342d4e87eb91f6c020d6dc430987db9c0fd5ee2e93e09a181"
+    }
+  },
+  {
+    "id": "6e1bc09d-5114-4856-be45-00495e979713",
+    "actor": "414f2ce8-498a-4dff-96c9-56458703db49",
+    "action": "apply_budget_change",
+    "decision": "rejected",
+    "correlationId": "8b2a3098-ceae-4ab6-8dd0-02650ad388f8",
+    "timestamp": "2026-10-19T09:10:56.091Z",
+    "metadata": {
+      "proposalId": "b15d920f-a995-40b5-b261-ab8ee6673577",
+      "payloadHash": "e51dd234439cefd342d4e87eb91f6c020d6dc430987db9c0fd5ee2e93e09a181"
+    }
+  },
+  {
+    "id": "308ccd0e-0c8e-4325-bc2e-bc45de1e2a37",
+    "actor": "414f2ce8-498a-4dff-96c9-56458703db49",
+    "action": "propose_budget_change",
+    "decision": "proposed",
+    "correlationId": "ac6a9bce-c408-4600-a11e-15f4ad7b0964",
+    "timestamp": "2026-10-19T09:10:55.878Z",
+    "metadata": {
+      "proposalId": "b15d920f-a995-40b5-b261-ab8ee6673577",
+      "payloadHash": "e51dd234439cefd342d4e87eb91f6c020d6dc430987db9c0fd5ee2e93e09a181"
+    }
+  }
+]

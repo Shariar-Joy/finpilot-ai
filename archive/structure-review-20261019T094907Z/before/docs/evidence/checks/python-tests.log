@@ -1,0 +1,15 @@
+C:\Users\USER\AppData\Roaming\Python\Python314\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+test_body_limit (test_main.AnalysisTests.test_body_limit) ... ok
+test_duplicate_ids_rejected (test_main.AnalysisTests.test_duplicate_ids_rejected) ... ok
+test_extra_user_text_rejected (test_main.AnalysisTests.test_extra_user_text_rejected) ... ok
+test_float_amount_rejected (test_main.AnalysisTests.test_float_amount_rejected) ... ok
+test_health (test_main.AnalysisTests.test_health) ... ok
+test_integer_math (test_main.AnalysisTests.test_integer_math) ... ok
+test_invalid_calendar_date (test_main.AnalysisTests.test_invalid_calendar_date) ... ok
+test_unauthorized (test_main.AnalysisTests.test_unauthorized) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.047s
+
+OK

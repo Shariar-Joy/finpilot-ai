@@ -24,7 +24,7 @@ async function main() {
   await createUser(
     {
       id: randomUUID(),
-      name: "Alex Morgan",
+      name: "Shariar Joy",
       email: "demo@finpilot.local",
       passwordHash: await hash(password, 12),
     },

@@ -1,3 +1,4 @@
+# Local dependencies, build output and secrets
 node_modules/
 .next/
 .env*
@@ -10,7 +11,16 @@ test-results/
 coverage/
 *.tsbuildinfo
 *.log
-!docs/runs/*.log
+# Authentic current and archived execution evidence stays versioned
+!archive/**/runs/*.log
+!archive/**/docs/evidence/**/*.log
+!archive/**/docs/evidence/*.log
+!docs/evidence/checks/*.log
+!docs/evidence/*.log
+# Reproducible judge exports and private build intermediates
+output/packages/
+submission/final/
+archive/generated-exports/
 .tools/
 *.aux
 *.blg

@@ -18,22 +18,32 @@ if (
   browser.stats.skipped
 )
   throw new Error("Verification contains failures or skipped browser cases");
-const { spawnSync } = await import("node:child_process");
-const result = spawnSync(
-  "python",
-  ["-m", "unittest", "discover", "-s", "services/analytics", "-v"],
-  { encoding: "utf8" },
+const checks = JSON.parse(
+  await readFile("docs/evidence/checks/check-results.json", "utf8"),
 );
-if (result.status !== 0)
+if (!checks.passed || checks.results.some((check) => !check.passed))
   throw new Error(
-    result.error?.message || result.stderr || "Python checks failed",
+    "Run scripts/verify.mjs successfully before collecting final evidence",
   );
-const output = result.stdout + result.stderr;
+if (
+  unit.startTime < Date.parse(checks.startedAt) ||
+  Date.parse(browser.stats.startTime) < Date.parse(checks.startedAt)
+)
+  throw new Error(
+    "Unit or browser results predate the current verification run",
+  );
+const output = await readFile("docs/evidence/checks/python-tests.log", "utf8");
 const count = Number(output.match(/Ran (\d+) tests?/)?.[1]);
 if (!count) throw new Error("Python test count missing");
-await writeFile("docs/runs/python-tests.log", output);
 const summary = {
   generatedAt: new Date().toISOString(),
+  verificationStartedAt: checks.startedAt,
+  scope: checks.scope,
+  checks: checks.results.map(({ name, passed, log }) => ({
+    name,
+    passed,
+    log,
+  })),
   unit: {
     passed: unit.numPassedTests,
     failed: unit.numFailedTests,

@@ -24,9 +24,9 @@ The agent completes a real sandbox state change. It cannot approve its own propo
 
 ## Competition paperwork
 
-The [submission package](submission/README.md) includes a technical paper, security self-assessment, execution-evidence report, and cover/team checklist. The technical reports use IEEE conference formatting, with two blank team-member entries and real figures. [Overleaf source](submission/overleaf/README.md) is editable and self-contained. The [Gamma prompt](docs/gamma-presentation-prompt.md) is separate; no presentation deck is included.
+The [submission guide](submission/README.md) explains the four compiled papers, editable [Overleaf source](submission/overleaf/README.md), authentic evidence and the generated judge-facing export. Run `powershell -File scripts/package-submission.ps1`, then begin with `submission/final/START_HERE.md`. That folder contains only final deliverables, authentic evidence and checksums. The reports use IEEE conference formatting and retain blank identity fields for two members. No presentation deck is included.
 
-See the [requirements crosswalk](docs/competition-requirements.md), [code review and cleanup report](docs/review-report.md), [security policy](SECURITY.md), [contribution guide](CONTRIBUTING.md), [project rights notice](LICENSE), and [third-party notices](THIRD_PARTY_NOTICES.md). No IEEE publication, competition acceptance, score, or regulatory certification is claimed.
+See the [requirements crosswalk](docs/competition-requirements.md), [security policy](SECURITY.md), [contribution guide](CONTRIBUTING.md), [project rights notice](LICENSE), and [third-party notices](THIRD_PARTY_NOTICES.md). Historical review notes, Gamma prompt, logs and old packages are preserved under archive, outside the primary submission. No IEEE publication, competition acceptance, score, or regulatory certification is claimed.
 
 ## Run the demo (no database or API key needed)
 
@@ -39,7 +39,7 @@ npm run dev
 
 Open **http://127.0.0.1:3000**, choose **Explore the live demo**, then **AI copilot → Run demo scenario**. Inspect the tools, evidence, and proposed dining budget. Reject it first; run again and approve. Check **Budgets → next month** and **Activity & audit**.
 
-The demo button creates a fresh, isolated account with 90 days of synthetic transactions. There is no shared password. You can also register with an email-shaped identifier and a password (12+ characters, at most 72 UTF-8 bytes), then sign in again. No email is sent or verified. All accounts and CSV imports are sandbox data.
+The demo button creates a fresh, isolated account named **Shariar Joy** with 90 days of synthetic transactions. There is no shared password. You can also register with an email-shaped identifier and a password (12+ characters, at most 72 UTF-8 bytes), then sign in again. No email is sent or verified. All accounts and CSV imports are sandbox data.
 
 **Without `DATABASE_URL`, data exists only in the server process memory. Restarting the server loses accounts, sessions, budgets, imports, and audit history.** The UI identifies this mode. Use one server process. It is unsuitable for multiple replicas or serverless hosting. A configured but unreachable database never silently falls back to memory.
 
@@ -113,6 +113,10 @@ date,merchant,amount,category
 Categories: Income, Dining, Groceries, Housing, Transport, Subscriptions, Utilities, Shopping, Health, Other. A [sample file](public/sample-transactions.csv) is downloadable in the import dialog. It uses fixed October 2026 dates; select that month after importing it. Duplicate identity is date + normalized merchant + signed amount; identical legitimate same-day purchases are therefore treated as duplicates. A bad row rejects the entire batch. Limits are 512 KB and 2,000 rows per import.
 
 ## Verification
+
+Run `npm run verify` for the complete local suite. It uses a separate demo server on port 3100 and a build directory under `.next/verification`, without a database or paid model key. Override the port with `FINPILOT_TEST_PORT` if necessary. Actual outcomes and UTF-8 logs are written to `docs/evidence/checks`; all checks run even if one fails. The runner returns a failing exit code if any check fails.
+
+Individual commands remain available:
 
 ```powershell
 npm run lint

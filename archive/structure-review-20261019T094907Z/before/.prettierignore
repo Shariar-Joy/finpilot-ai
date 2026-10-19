@@ -1,0 +1,10 @@
+node_modules
+.next
+package-lock.json
+test-results
+playwright-report
+docs/evidence
+archive
+output
+submission/final
+.tools

@@ -1,0 +1,5 @@
+
+> finpilot-ai@1.0.0 seed
+> tsx --env-file-if-exists=.env scripts/seed.ts
+
+Demo seed verified: 134 synthetic transactions spanning 90 days. In-memory mode seeds each new demo session; this CLI does not persist state.

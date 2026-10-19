@@ -1,0 +1,32 @@
+{
+  "status": "failed",
+  "checkedAt": "2026-10-19T09:53:16.380208+00:00",
+  "verificationStartedAt": "2026-10-19T09:50:52.006Z",
+  "primaryFilesInSource": 118,
+  "packagedMarkdownLinks": 72,
+  "packagedLatexReferences": 13,
+  "packagedLocalImports": 52,
+  "sourceZipCrc": true,
+  "submissionZipMatchesFinalFolder": true,
+  "overleafZipMatchesSource": true,
+  "finalFileChecksums": 17,
+  "downloadPackageChecksums": 2,
+  "archivedExportHashesVerified": 38,
+  "snapshotFilesVerified": 118,
+  "historicalArchiveFilesVerified": 59,
+  "protectedImplementationFilesUnchanged": 57,
+  "paperSourcesAndCanonicalPdfsUnchanged": true,
+  "checks": {
+    "lint": true,
+    "typecheck": true,
+    "unit": true,
+    "browser": true,
+    "python-tests": true,
+    "build": true,
+    "seed": true
+  },
+  "errors": [
+    "Missing packaged import: next-env.d.ts -> ./.next/dev/types/routes.d.ts",
+    "Missing packaged import: next-env.d.ts -> ./.next/dev/types/root-params.d.ts"
+  ]
+}

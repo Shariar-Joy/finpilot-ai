@@ -112,7 +112,7 @@ export async function handleApi(request: Request): Promise<Response> {
         const id = randomUUID();
         user = {
           id,
-          name: "Alex Morgan",
+          name: "Shariar Joy",
           email: `demo-${id.slice(0, 8)}@finpilot.local`,
           passwordHash: await hash(randomUUID(), 10),
         };

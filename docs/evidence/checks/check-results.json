@@ -1,0 +1,71 @@
+{
+  "startedAt": "2026-10-19T09:50:52.006Z",
+  "scope": "Local isolated memory demo; no database or paid model. Browser server on port 3100.",
+  "results": [
+    {
+      "name": "lint",
+      "startedAt": "2026-10-19T09:50:52.007Z",
+      "finishedAt": "2026-10-19T09:50:57.070Z",
+      "exitCode": 0,
+      "signal": null,
+      "passed": true,
+      "log": "docs/evidence/checks/lint.log"
+    },
+    {
+      "name": "typecheck",
+      "startedAt": "2026-10-19T09:50:57.070Z",
+      "finishedAt": "2026-10-19T09:51:00.611Z",
+      "exitCode": 0,
+      "signal": null,
+      "passed": true,
+      "log": "docs/evidence/checks/typecheck.log"
+    },
+    {
+      "name": "unit",
+      "startedAt": "2026-10-19T09:51:00.612Z",
+      "finishedAt": "2026-10-19T09:51:04.387Z",
+      "exitCode": 0,
+      "signal": null,
+      "passed": true,
+      "log": "docs/evidence/checks/unit.log"
+    },
+    {
+      "name": "browser",
+      "startedAt": "2026-10-19T09:51:04.387Z",
+      "finishedAt": "2026-10-19T09:51:29.556Z",
+      "exitCode": 0,
+      "signal": null,
+      "passed": true,
+      "log": "docs/evidence/checks/browser.log"
+    },
+    {
+      "name": "python-tests",
+      "startedAt": "2026-10-19T09:51:29.556Z",
+      "finishedAt": "2026-10-19T09:51:30.450Z",
+      "exitCode": 0,
+      "signal": null,
+      "passed": true,
+      "log": "docs/evidence/checks/python-tests.log"
+    },
+    {
+      "name": "build",
+      "startedAt": "2026-10-19T09:51:30.450Z",
+      "finishedAt": "2026-10-19T09:51:38.187Z",
+      "exitCode": 0,
+      "signal": null,
+      "passed": true,
+      "log": "docs/evidence/checks/build.log"
+    },
+    {
+      "name": "seed",
+      "startedAt": "2026-10-19T09:51:38.188Z",
+      "finishedAt": "2026-10-19T09:51:38.784Z",
+      "exitCode": 0,
+      "signal": null,
+      "passed": true,
+      "log": "docs/evidence/checks/seed.log"
+    }
+  ],
+  "finishedAt": "2026-10-19T09:51:38.784Z",
+  "passed": true
+}

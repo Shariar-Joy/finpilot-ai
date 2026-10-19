@@ -1,5 +1,44 @@
 {
-  "generatedAt": "2026-10-19T08:11:15.965Z",
+  "generatedAt": "2026-10-19T09:51:57.102Z",
+  "verificationStartedAt": "2026-10-19T09:50:52.006Z",
+  "scope": "Local isolated memory demo; no database or paid model. Browser server on port 3100.",
+  "checks": [
+    {
+      "name": "lint",
+      "passed": true,
+      "log": "docs/evidence/checks/lint.log"
+    },
+    {
+      "name": "typecheck",
+      "passed": true,
+      "log": "docs/evidence/checks/typecheck.log"
+    },
+    {
+      "name": "unit",
+      "passed": true,
+      "log": "docs/evidence/checks/unit.log"
+    },
+    {
+      "name": "browser",
+      "passed": true,
+      "log": "docs/evidence/checks/browser.log"
+    },
+    {
+      "name": "python-tests",
+      "passed": true,
+      "log": "docs/evidence/checks/python-tests.log"
+    },
+    {
+      "name": "build",
+      "passed": true,
+      "log": "docs/evidence/checks/build.log"
+    },
+    {
+      "name": "seed",
+      "passed": true,
+      "log": "docs/evidence/checks/seed.log"
+    }
+  ],
   "unit": {
     "passed": 61,
     "failed": 0,
