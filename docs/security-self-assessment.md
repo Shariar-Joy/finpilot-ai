@@ -32,4 +32,4 @@ Scope: synthetic personal finance demonstration. This is an implementation revie
 - Approval tokens in the originating tab's sessionStorage are exposed to a same-origin script compromise. They expire quickly and cannot cross users/payloads; stronger XSS defenses remain relevant.
 - In-memory mode loses all state on restart, including audit history and sessions. Expired database sessions/approvals are checked on use but not automatically purged. Use a scheduled cleanup policy for a durable deployment.
 
-See [execution evidence](execution-evidence.md) for actual test outcomes, the dependency audit date, and unverified external capabilities.
+See the [retained verification record](evidence/checks/check-results.json), [historical dependency scan](evidence/dependency-audit.json), and [test instructions](../README.md#tests-and-evidence). The retained scan is historical evidence and does not establish the current advisory status.

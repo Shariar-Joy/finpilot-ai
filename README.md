@@ -1,52 +1,36 @@
 # FinPilot AI
 
-**Your money, understood.** An explainable personal finance sandbox built for Topic A of the 2026 Shenzhen International FinTech Competition.
-
-FinPilot connects transaction analysis to a completed budgeting task: inspect the evidence, review an exact proposal, and approve or reject the change. Financial calculations run on the server using integer USD cents. An optional language model selects tools; a separate approval endpoint applies changes.
+**Your money, understood.** A personal finance sandbox with explainable calculations, visible tool results, and user-approved budget and reminder changes.
 
 [![Verification](https://github.com/Shariar-Joy/finpilot-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/Shariar-Joy/finpilot-ai/actions/workflows/ci.yml)
 
-![Dashboard with synthetic transactions](docs/evidence/dashboard-desktop.png)
+## Features and architecture
 
-## Implemented features
+- Monthly dashboards, transaction search, validated CSV imports, and CSV/PDF exports.
+- Budgets, recurring-bill inference, in-app reminders, and unusual-spending explanations.
+- A finance copilot that proposes exact changes, waits for approval or rejection, and records the decision. Tokens are user-bound, expire after five minutes, and can be consumed only once.
+- User-scoped accounts, revocable sessions, responsive navigation, and light/dark themes.
 
-- Dashboard with monthly income, spending, savings, category totals, and spending comparisons.
-- Transaction search and filters, category editing, and CSV import with preview, validation, deduplication, and atomic writes. Try the [sample CSV](public/sample-transactions.csv); select October 2026 after importing its fixed-date records.
-- Budget management, progress alerts, inferred recurring bills, in-app reminders, and unusual-spending explanations linked to transactions.
-- Finance copilot with visible tool results, exact proposals, explicit approval or rejection, and an audit trail. Approval tokens expire after five minutes and can be consumed only once.
-- User-scoped accounts, revocable sessions, monthly CSV/PDF exports, responsive navigation, and light/dark themes.
-- Optional PostgreSQL persistence, private Python analytics, and OpenAI tool planning. The keyless deterministic agent completes the demo independently.
+The React/Next.js interface calls a same-origin API. Server functions validate input and calculate money in integer USD cents. Approval consumption, ledger changes, and audit entries commit together. Prisma supports PostgreSQL persistence; a single-process memory mode runs the demo without external services. Optional OpenAI planning selects read/proposal tools, while private FastAPI analytics independently checks monthly totals. Neither integration can authorize financial changes.
 
-## Architecture
+See [architecture](docs/architecture.md) and [algorithms](docs/algorithms.md).
 
-The React interface uses a same-origin Next.js API. Server-side validation and authentication select the user's ledger; deterministic tools calculate results and create proposals. Approval consumption, financial changes, and audit entries commit together. Prisma stores users, sessions, and JSONB ledgers in PostgreSQL, or an explicit single-process demo uses memory. The optional FastAPI service independently calculates monthly summaries and cannot modify financial records.
+## Install and run
 
-Stack: Next.js App Router, React, TypeScript, Tailwind CSS, Recharts, Prisma/PostgreSQL, and Python/FastAPI.
-
-See [architecture](docs/architecture.md) and [algorithms](docs/algorithms.md) for implementation details and tradeoffs.
-
-## Setup and installation
-
-Use **Node.js 24.x** and npm. Run commands from the directory containing `package.json` (`FinPilot_AI_Code/FinPilot AI` in the supplied workspace):
+Use **Node.js 24.x** and npm. From the directory containing `package.json`:
 
 ```powershell
 npm ci
 npm run dev
 ```
 
-Open **http://127.0.0.1:3000** and choose **Explore the live demo**. This creates a fresh account named Shariar Joy with 90 days of synthetic transactions. No database, Python service, or API key is required. Registration is also available with a password of at least 12 characters and at most 72 UTF-8 bytes; email addresses are not verified.
+Open **http://127.0.0.1:3000** and choose **Explore the live demo**. No database, Python service, or API key is required. Each demo account receives 90 days of synthetic transactions. **Memory-mode data is lost on server restart.** A configured but unavailable database returns an error instead of falling back to memory.
 
-**Memory-mode data is lost when the server restarts.** Use one server process. A configured but unavailable PostgreSQL database returns an error instead of falling back to memory.
+### PostgreSQL
 
-### PostgreSQL persistence
+Copy `.env.example` to `.env`. Set `DATABASE_URL`, `APP_ORIGIN`, a random `SESSION_SECRET` of at least 32 characters, and a `DEMO_PASSWORD` of at least 12 characters. Generate a secret with `node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"`.
 
-Copy `.env.example` to `.env`, then set `DATABASE_URL`, `APP_ORIGIN`, a random `SESSION_SECRET` of at least 32 characters, and a `DEMO_PASSWORD` of at least 12 characters. Generate a secret locally:
-
-```powershell
-node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
-```
-
-With Docker Desktop running, set `POSTGRES_PASSWORD` in your shell to the password used in `DATABASE_URL`, then:
+With Docker Desktop running, set `POSTGRES_PASSWORD` in your shell to match `DATABASE_URL`, then:
 
 ```powershell
 docker compose up -d postgres
@@ -55,11 +39,11 @@ npm run seed
 npm run dev
 ```
 
-The seed command loads `.env` and creates `demo@finpilot.local` using `DEMO_PASSWORD`; it leaves an existing account unchanged. The demo button creates a separate workspace. Use migrations for persistent deployments; `npm run db:push` is available for disposable development databases.
+The seed creates `demo@finpilot.local` using `DEMO_PASSWORD` and leaves an existing account unchanged. Use migrations for persistent deployments.
 
-### Optional Python analytics
+### Optional integrations
 
-Use Python 3.13 or newer. In a separate terminal:
+For Python analytics, use Python 3.13 or newer:
 
 ```powershell
 python -m venv .venv
@@ -68,19 +52,17 @@ $env:ANALYTICS_SERVICE_TOKEN = 'YOUR_GENERATED_SERVICE_SECRET'
 .\.venv\Scripts\python.exe -m uvicorn main:app --app-dir services/analytics --host 127.0.0.1 --port 8000 --no-access-log
 ```
 
-Set the same `ANALYTICS_SERVICE_TOKEN` and `ANALYTICS_URL=http://127.0.0.1:8000` in the application's `.env`, restart Next.js, and choose **Settings > Python analysis service > Verify**. Alternatively, with the token set in your shell, run `docker compose up -d analytics`. Only user-scoped transaction IDs, dates, categories, and integer amounts are forwarded. The core demo works while this service is offline.
+Set the same token and `ANALYTICS_URL=http://127.0.0.1:8000` in the application's `.env`, restart Next.js, and choose **Settings > Python analysis service > Verify**. Docker users can instead run `docker compose up -d analytics` with the token set in their shell.
 
-### Optional model planning
+For optional model planning, set the server-only `OPENAI_API_KEY` and optionally `OPENAI_MODEL` in `.env`, then restart. The configured default is `gpt-4.1-mini`. Missing keys, provider failures, or invalid plans use the deterministic fallback. Tests mock provider responses.
 
-Set the server-only `OPENAI_API_KEY` and optionally `OPENAI_MODEL` in `.env`, then restart the app. The configured default is `gpt-4.1-mini`; use a Responses-compatible model available to your account. Provider failures or invalid plans fall back to the deterministic agent. Tests mock provider responses; retained evidence does not verify live paid-model execution.
+### Production
 
-### Production startup
+Configure PostgreSQL, apply migrations, set `DEMO_MODE=false`, a persistent session secret, and an HTTPS `APP_ORIGIN`. Run `npm run build`, then `npm run start -- --hostname 0.0.0.0` behind a TLS reverse proxy with request and rate limits. Keep analytics private. A temporary preview may explicitly use `DEMO_MODE=true`; memory storage remains ephemeral and single-process.
 
-Builds require no credentials or live database. For persistent deployment, configure PostgreSQL, apply migrations, set `DEMO_MODE=false`, a persistent `SESSION_SECRET`, and an HTTPS `APP_ORIGIN`. Run `npm run build` and `npm run start -- --hostname 0.0.0.0` behind a TLS reverse proxy with request and rate limits. Keep the analytics service private. An explicitly temporary preview can use `DEMO_MODE=true`; its memory storage remains ephemeral and single-process.
+## Tests and evidence
 
-## Running tests
-
-For isolated local checks, leave `DATABASE_URL` and `OPENAI_API_KEY` unset. Install the optional Python dependencies before its tests:
+For isolated local checks, leave `DATABASE_URL` and `OPENAI_API_KEY` unset:
 
 ```powershell
 npm run lint
@@ -93,39 +75,24 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-Playwright starts a development server automatically. Its default URL is `http://127.0.0.1:3000`; keep `APP_ORIGIN` consistent with the browser URL. To use a separate port, set both `APP_ORIGIN` and `E2E_BASE_URL` to that origin and set `FINPILOT_VERIFY_RUN=true` to require a fresh server.
+Playwright starts a development server at `http://127.0.0.1:3000`. For a separate port, set `APP_ORIGIN` and `E2E_BASE_URL` to the same origin and `FINPILOT_VERIFY_RUN=true` to require a fresh server. CI also runs the TypeScript suite against PostgreSQL.
 
-Vitest covers calculations, ownership, authentication, CSV handling, provider boundaries, approval binding, concurrency, and rollback. Chromium scenarios exercise the complete user workflows and mobile rendering. CI also runs the TypeScript suite against PostgreSQL.
+Original [verification records](docs/evidence/checks/check-results.json), [unit results](docs/evidence/unit-results.json), [browser results](docs/evidence/browser-results.json), and [sanitized audit evidence](docs/evidence/audit-example.json) support the separately maintained competition reports. These are dated records, not results from each new checkout. The report-referenced screenshots and monthly PDF remain for traceability.
 
-The [retained execution record](docs/execution-evidence.md) links original JSON, logs, screenshots, and video. Routine checks above leave those evidence files unchanged. `npm run verify` deliberately replaces test evidence under `docs/evidence/`; `node scripts/collect-evidence.mjs` validates the captured run and updates its summary. Use these, the benchmark, and capture/recording scripts only when intentionally refreshing evidence. `node scripts/verify-services.mjs` checks a running Next.js/FastAPI integration; see its base-URL setting before running it.
+`npm run verify` intentionally overwrites test evidence; `node scripts/collect-evidence.mjs` validates that run and updates its summary. Use these and the capture/benchmark scripts only when refreshing evidence. `scripts/record-demo.mjs` reproduces the captioned application demo. New recordings and metadata go to ignored `output/demo/`; `FINPILOT_RECORDING_DIR` selects another destination. `scripts/verify-services.mjs` checks a running Next.js/FastAPI integration.
 
-## Demo instructions
+## Try the demo
 
-1. Start the app, open the local URL, and choose **Explore the live demo**.
-2. Open **AI copilot > Run demo scenario**. Inspect the tools, transaction references, and proposed next-month dining budget.
-3. Reject the proposal and confirm the budget is unchanged.
-4. Run the scenario again and approve it. In **Budgets**, select the proposal's target month and check the exact saved limit.
-5. Open **Activity & audit** to inspect both decisions.
+Open **AI copilot > Run demo scenario**, inspect the tools and exact proposal, and reject it. Run it again and approve it; select the proposal's target month in **Budgets**, then inspect **Activity & audit**. The [sample CSV](public/sample-transactions.csv) uses fixed October 2026 dates. Accounting months use UTC.
 
-Follow the [five-minute demo script](docs/demo-script.md), or view the [retained application recording](docs/evidence/demo.webm). Accounting months and seed generation use UTC; use the actual values shown by the app.
+The original [captioned recording](docs/evidence/demo.webm) demonstrates CSV validation, approval, rejection, and the audit trail. Completed competition deliverables are maintained separately in `FinPilot_AI_Doc` in the supplied workspace.
 
-## Security limitations
+## Security and maintenance
 
-This is a synthetic sandbox. It has no bank connection, payment execution, external notification delivery, email verification, MFA, or password recovery. Inferred bills and unusual-spending rules are descriptive. Model-selected proposals can be incorrect and require human review.
+This synthetic sandbox has no bank connection, payment execution, external notification delivery, email verification, MFA, or password recovery. Memory storage and rate limits are process-local. The ledger, audit retention, and deployment controls need further hardening for real users. Live-model reliability and independent penetration testing are unverified; no regulatory certification is claimed.
 
-Memory storage and rate limits are process-local. The JSONB ledger and application-owned audit trail require further scaling, retention, and operational hardening for real users. Live-model reliability, hosted production operation, and independent penetration testing are unverified. No regulatory certification is claimed.
-
-Keep `.env`, credentials, session/approval tokens, and real financial records out of Git. See the [security assessment](docs/security-self-assessment.md) and [security reporting policy](SECURITY.md).
-
-## Competition materials and documentation
-
-The six completed competition deliverables are maintained separately in `FinPilot_AI_Doc` in the supplied workspace. This repository contains the runnable application, technical documentation, and original evidence referenced by those reports. A public deliverables URL has not been provided.
-
-[Requirements crosswalk](docs/competition-requirements.md) ? [Contributing](CONTRIBUTING.md) ? [License](LICENSE) ? [Third-party notices](THIRD_PARTY_NOTICES.md)
+Keep credentials, `.env`, session/approval tokens, and real financial records out of Git. Read the [security design and limitations](docs/security-self-assessment.md), [security reporting policy](SECURITY.md), [contributing guide](CONTRIBUTING.md), [license](LICENSE), and [third-party notices](THIRD_PARTY_NOTICES.md).
 
 ## Authors
 
-- Shariar Nazim Joy
-- Abrar Hossain Abir
-
-Department of Computer Science and Engineering, Independent University, Bangladesh.
+Shariar Nazim Joy and Abrar Hossain Abir, Department of Computer Science and Engineering, Independent University, Bangladesh.

@@ -23,8 +23,12 @@ test-results/
 # Generated reports, packages, and temporary exports
 output/
 submission/final/
-archive/generated-exports/
+archive/
 *.zip
+*.webm
+*.mp4
+*.mov
+*.mkv
 *.pdf
 *.aux
 *.blg
@@ -34,10 +38,8 @@ archive/generated-exports/
 *.tmp
 *.temp
 
-# Original application exports and historical evidence remain versionable
+# Original report-referenced evidence remains versionable
 !docs/evidence/**/*.pdf
-!archive/**/docs/evidence/**/*.pdf
+!docs/evidence/demo.webm
 *.log
 !docs/evidence/**/*.log
-!archive/**/docs/evidence/**/*.log
-!archive/**/docs/runs/*.log

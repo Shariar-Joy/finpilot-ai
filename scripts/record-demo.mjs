@@ -1,12 +1,18 @@
 import { chromium } from "@playwright/test";
 import { copyFile, mkdir, writeFile } from "node:fs/promises";
 import assert from "node:assert/strict";
+import path from "node:path";
 const base = process.env.E2E_BASE_URL || "http://127.0.0.1:3000";
-await mkdir("docs/evidence", { recursive: true });
+const outputDir = process.env.FINPILOT_RECORDING_DIR || "output/demo";
+const recordingPath = path.join(outputDir, "demo.webm");
+await mkdir(outputDir, { recursive: true });
 const browser = await chromium.launch();
 const context = await browser.newContext({
   viewport: { width: 1440, height: 900 },
-  recordVideo: { dir: ".tools/recordings", size: { width: 1440, height: 900 } },
+  recordVideo: {
+    dir: path.join(outputDir, "raw"),
+    size: { width: 1440, height: 900 },
+  },
 });
 const page = await context.newPage();
 const video = page.video();
@@ -151,7 +157,7 @@ try {
   await context.close();
   await browser.close();
 }
-await copyFile(await video.path(), "docs/evidence/demo.webm");
+await copyFile(await video.path(), recordingPath);
 const metadata = {
   recordedAt: new Date().toISOString(),
   elapsedSeconds: Math.round((Date.now() - started) / 1000),
@@ -164,11 +170,11 @@ const metadata = {
     "Separate rejection left complete budget array unchanged",
     "No browser page errors",
   ],
-  file: "docs/evidence/demo.webm",
+  file: recordingPath.replaceAll("\\", "/"),
 };
 assert(metadata.elapsedSeconds < 300, "Demo exceeded five minutes");
 await writeFile(
-  "docs/evidence/demo-recording.json",
+  path.join(outputDir, "demo-recording.json"),
   JSON.stringify(metadata, null, 2) + "\n",
 );
 console.log(JSON.stringify(metadata));
