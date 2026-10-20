@@ -53,6 +53,6 @@ Run npm run verify to execute the complete isolated local suite. Logs and exit c
 - No hosted deployment, bank connection, money transfer, external notification, load test, independent penetration test or regulatory certification is claimed.
 - Memory mode loses state on process restart. PostgreSQL aggregate storage, process-local rate limits, identity and retention hardening remain documented prototype limitations.
 
-Historical logs, prior review/Gamma material, old packages and original evidence/paper versions are preserved under archive/2026-10-19-pre-simplification with a SHA-256 manifest. The later structure-review snapshot preserves the pre-review working files, decision table and evidence before this verification refresh. Current evidence and canonical paper paths remain available. Optional history is excluded from the generated judge export.
+Distinct historical test records and captures remain at their original paths under `archive/`. Duplicate snapshots and the superseded report-generation toolchain have been removed. The completed competition deliverables are maintained separately in `FinPilot_AI_Doc`; the active evidence cited by those reports remains unchanged.
 
-See the [architecture](architecture.md), [algorithms](algorithms.md), [security self-assessment](security-self-assessment.md), [requirements crosswalk](competition-requirements.md), [demo script](demo-script.md) and [submission guide](../submission/README.md).
+See the [architecture](architecture.md), [algorithms](algorithms.md), [security self-assessment](security-self-assessment.md), [requirements crosswalk](competition-requirements.md), [demo script](demo-script.md).

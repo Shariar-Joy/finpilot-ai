@@ -1,5 +1,0 @@
-
-> finpilot-ai@1.0.0 test
-> vitest run --reporter=json --outputFile=docs/evidence/unit-results.json
-
-JSON report written to F:/FinPilot AI/docs/evidence/unit-results.json

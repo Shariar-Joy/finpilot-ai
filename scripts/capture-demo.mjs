@@ -2,7 +2,6 @@ import { chromium } from "@playwright/test";
 import { mkdir, writeFile } from "node:fs/promises";
 const base = process.env.E2E_BASE_URL || "http://127.0.0.1:3000";
 await mkdir("docs/evidence", { recursive: true });
-await mkdir("submission/overleaf/figures", { recursive: true });
 const browser = await chromium.launch();
 try {
   const page = await browser.newPage({
@@ -19,11 +18,6 @@ try {
   await page.screenshot({
     path: "docs/evidence/dashboard-desktop.png",
     fullPage: true,
-    animations: "disabled",
-  });
-  await page.screenshot({
-    path: "submission/overleaf/figures/dashboard.png",
-    clip: { x: 235, y: 73, width: 1205, height: 745 },
     animations: "disabled",
   });
   const pdf = await page.request.get(`${base}/api/export/pdf`);
@@ -44,10 +38,6 @@ try {
   await page.screenshot({
     path: "docs/evidence/agent-approved.png",
     fullPage: true,
-    animations: "disabled",
-  });
-  await page.locator(".chat-message.assistant").last().screenshot({
-    path: "submission/overleaf/figures/agent.png",
     animations: "disabled",
   });
   const data = await (await page.request.get(`${base}/api/data`)).json();

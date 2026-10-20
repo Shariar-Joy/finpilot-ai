@@ -1,62 +1,52 @@
 # FinPilot AI
 
-**Your money, understood.** A functional personal finance sandbox for the 2026 Shenzhen International FinTech Competition, Topic A.
+**Your money, understood.** An explainable personal finance sandbox built for Topic A of the 2026 Shenzhen International FinTech Competition.
 
-Next.js App Router · React · TypeScript strict · Tailwind CSS · Recharts · Prisma/PostgreSQL · Python FastAPI · optional OpenAI Responses function calling.
+FinPilot connects transaction analysis to a completed budgeting task: inspect the evidence, review an exact proposal, and approve or reject the change. Financial calculations run on the server using integer USD cents. An optional language model selects tools; a separate approval endpoint applies changes.
 
 [![Verification](https://github.com/Shariar-Joy/finpilot-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/Shariar-Joy/finpilot-ai/actions/workflows/ci.yml)
 
-![FinPilot dashboard using synthetic records](submission/overleaf/figures/dashboard.png)
+![Dashboard with synthetic transactions](docs/evidence/dashboard-desktop.png)
 
-## The workflow
+## Implemented features
 
-```mermaid
-flowchart LR
-  A[Inspect or import synthetic records] --> B[Ask a finance question]
-  B --> C[Inspect tools and transaction evidence]
-  C --> D[Review an exact proposal]
-  D --> E{Your decision}
-  E -->|Approve| F[Apply once and record audit]
-  E -->|Reject| G[Leave finances unchanged and record decision]
-```
+- Dashboard with monthly income, spending, savings, category totals, and spending comparisons.
+- Transaction search and filters, category editing, and CSV import with preview, validation, deduplication, and atomic writes. Try the [sample CSV](public/sample-transactions.csv); select October 2026 after importing its fixed-date records.
+- Budget management, progress alerts, inferred recurring bills, in-app reminders, and unusual-spending explanations linked to transactions.
+- Finance copilot with visible tool results, exact proposals, explicit approval or rejection, and an audit trail. Approval tokens expire after five minutes and can be consumed only once.
+- User-scoped accounts, revocable sessions, monthly CSV/PDF exports, responsive navigation, and light/dark themes.
+- Optional PostgreSQL persistence, private Python analytics, and OpenAI tool planning. The keyless deterministic agent completes the demo independently.
 
-The agent completes a real sandbox state change. It cannot approve its own proposal. Watch the [actual short captioned demo](docs/evidence/demo.webm), inspect the [verification summary](docs/evidence/verification-summary.json) and [successful application/PostgreSQL CI evidence](docs/evidence/ci-verification.json), or follow the [five-minute walkthrough](docs/demo-script.md).
+## Architecture
 
-## Competition paperwork
+The React interface uses a same-origin Next.js API. Server-side validation and authentication select the user's ledger; deterministic tools calculate results and create proposals. Approval consumption, financial changes, and audit entries commit together. Prisma stores users, sessions, and JSONB ledgers in PostgreSQL, or an explicit single-process demo uses memory. The optional FastAPI service independently calculates monthly summaries and cannot modify financial records.
 
-The [submission guide](submission/README.md) explains the four compiled papers, editable [Overleaf source](submission/overleaf/README.md), authentic evidence and the generated judge-facing export. Run `powershell -File scripts/package-submission.ps1`, then begin with `submission/final/START_HERE.md`. That folder contains only final deliverables, authentic evidence and checksums. The reports use IEEE conference formatting and retain blank identity fields for two members. No presentation deck is included.
+Stack: Next.js App Router, React, TypeScript, Tailwind CSS, Recharts, Prisma/PostgreSQL, and Python/FastAPI.
 
-See the [requirements crosswalk](docs/competition-requirements.md), [security policy](SECURITY.md), [contribution guide](CONTRIBUTING.md), [project rights notice](LICENSE), and [third-party notices](THIRD_PARTY_NOTICES.md). Historical review notes, Gamma prompt, logs and old packages are preserved under archive, outside the primary submission. No IEEE publication, competition acceptance, score, or regulatory certification is claimed.
+See [architecture](docs/architecture.md) and [algorithms](docs/algorithms.md) for implementation details and tradeoffs.
 
-## Run the demo (no database or API key needed)
+## Setup and installation
 
-Requires Node.js 24 LTS and npm. From this directory:
+Use **Node.js 24.x** and npm. Run commands from the directory containing `package.json` (`FinPilot_AI_Code/FinPilot AI` in the supplied workspace):
 
 ```powershell
 npm ci
 npm run dev
 ```
 
-Open **http://127.0.0.1:3000**, choose **Explore the live demo**, then **AI copilot → Run demo scenario**. Inspect the tools, evidence, and proposed dining budget. Reject it first; run again and approve. Check **Budgets → next month** and **Activity & audit**.
+Open **http://127.0.0.1:3000** and choose **Explore the live demo**. This creates a fresh account named Shariar Joy with 90 days of synthetic transactions. No database, Python service, or API key is required. Registration is also available with a password of at least 12 characters and at most 72 UTF-8 bytes; email addresses are not verified.
 
-The demo button creates a fresh, isolated account named **Shariar Joy** with 90 days of synthetic transactions. There is no shared password. You can also register with an email-shaped identifier and a password (12+ characters, at most 72 UTF-8 bytes), then sign in again. No email is sent or verified. All accounts and CSV imports are sandbox data.
+**Memory-mode data is lost when the server restarts.** Use one server process. A configured but unavailable PostgreSQL database returns an error instead of falling back to memory.
 
-**Without `DATABASE_URL`, data exists only in the server process memory. Restarting the server loses accounts, sessions, budgets, imports, and audit history.** The UI identifies this mode. Use one server process. It is unsuitable for multiple replicas or serverless hosting. A configured but unreachable database never silently falls back to memory.
+### PostgreSQL persistence
 
-## PostgreSQL persistence
+Copy `.env.example` to `.env`, then set `DATABASE_URL`, `APP_ORIGIN`, a random `SESSION_SECRET` of at least 32 characters, and a `DEMO_PASSWORD` of at least 12 characters. Generate a secret locally:
 
-Copy `.env.example` to `.env` and configure:
-
-```dotenv
-DATABASE_URL=postgresql://finpilot:YOUR_PASSWORD@localhost:5432/finpilot
-APP_ORIGIN=http://127.0.0.1:3000
-SESSION_SECRET=YOUR_RANDOM_SECRET_OF_AT_LEAST_32_CHARACTERS
-DEMO_PASSWORD=YOUR_CHOSEN_DEMO_PASSWORD_OF_AT_LEAST_12_CHARACTERS
+```powershell
+node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
 ```
 
-Generate secrets locally using `node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"`. Do not commit `.env`.
-
-For Docker Desktop, start its engine, set `POSTGRES_PASSWORD` in your shell to the same password used in `DATABASE_URL`, then:
+With Docker Desktop running, set `POSTGRES_PASSWORD` in your shell to the password used in `DATABASE_URL`, then:
 
 ```powershell
 docker compose up -d postgres
@@ -65,13 +55,11 @@ npm run seed
 npm run dev
 ```
 
-`seed` loads `.env` and creates **demo@finpilot.local** with the password you supplied in `DEMO_PASSWORD`. Rerunning it does not overwrite an existing account. The demo button remains available and creates a separate workspace. `npm run db:push` is available for disposable development databases; use migrations for deployments.
+The seed command loads `.env` and creates `demo@finpilot.local` using `DEMO_PASSWORD`; it leaves an existing account unchanged. The demo button creates a separate workspace. Use migrations for persistent deployments; `npm run db:push` is available for disposable development databases.
 
-The schema uses relational users and revocable sessions plus one JSONB ledger aggregate per user. Approval consumption, budget writes, and audit records commit together using optimistic version checks. See [architecture](docs/architecture.md) for tradeoffs. PostgreSQL migrations are provided; see [execution evidence](docs/execution-evidence.md) for what was actually exercised in this environment.
+### Optional Python analytics
 
-## Python FastAPI service
-
-Python 3.13+ is recommended. In a second terminal:
+Use Python 3.13 or newer. In a separate terminal:
 
 ```powershell
 python -m venv .venv
@@ -80,70 +68,64 @@ $env:ANALYTICS_SERVICE_TOKEN = 'YOUR_GENERATED_SERVICE_SECRET'
 .\.venv\Scripts\python.exe -m uvicorn main:app --app-dir services/analytics --host 127.0.0.1 --port 8000 --no-access-log
 ```
 
-Set the same `ANALYTICS_SERVICE_TOKEN` and `ANALYTICS_URL=http://127.0.0.1:8000` in the Next.js `.env`, restart Next.js, and choose **Settings → Python analysis service → Verify**. The server forwards only the current user's transaction IDs, dates, categories, and integer amounts. Python independently calculates the monthly totals. It cannot mutate financial records. The full demo works when this optional service is offline.
+Set the same `ANALYTICS_SERVICE_TOKEN` and `ANALYTICS_URL=http://127.0.0.1:8000` in the application's `.env`, restart Next.js, and choose **Settings > Python analysis service > Verify**. Alternatively, with the token set in your shell, run `docker compose up -d analytics`. Only user-scoped transaction IDs, dates, categories, and integer amounts are forwarded. The core demo works while this service is offline.
 
-Alternatively set `ANALYTICS_SERVICE_TOKEN` in your shell and run `docker compose up -d analytics`. Its port is bound to loopback. `/health` is public; `/analyze` requires the service token and limits requests to 2 MB / 10,000 records. No browser CORS access is enabled.
+### Optional model planning
 
-## LLM configuration
+Set the server-only `OPENAI_API_KEY` and optionally `OPENAI_MODEL` in `.env`, then restart the app. The configured default is `gpt-4.1-mini`; use a Responses-compatible model available to your account. Provider failures or invalid plans fall back to the deterministic agent. Tests mock provider responses; retained evidence does not verify live paid-model execution.
 
-Set `OPENAI_API_KEY` and optionally `OPENAI_MODEL` (default `gpt-4.1-mini`; choose a Responses-compatible model available to your account). Restart the app. Only server code reads the key.
+### Production startup
 
-The provider selects a bounded batch of read/proposal function calls through the Responses API. Validated tools execute on the server; financial answers are rendered from deterministic results, rather than trusting model arithmetic or permission claims. The model never receives approval tokens and has no mutation tool. Missing keys, provider errors, invalid plans, or timeouts select the fully functional deterministic agent. Provider planning is stateless and does not retain conversation context. The UI names the runtime used for each response. Live paid-provider execution requires your own credential; tests use mocked provider responses.
+Builds require no credentials or live database. For persistent deployment, configure PostgreSQL, apply migrations, set `DEMO_MODE=false`, a persistent `SESSION_SECRET`, and an HTTPS `APP_ORIGIN`. Run `npm run build` and `npm run start -- --hostname 0.0.0.0` behind a TLS reverse proxy with request and rate limits. Keep the analytics service private. An explicitly temporary preview can use `DEMO_MODE=true`; its memory storage remains ephemeral and single-process.
 
-## Available workflows
+## Running tests
 
-- Dashboard: monthly income, expenses, savings, category donut, and daily cumulative spending comparison.
-- Transactions: merchant/ID search, month/category filters, pagination, category editing, CSV preview, strict batch validation, deduplication and atomic import.
-- Budgets: create, edit, delete, alert thresholds and progress; next-month agent changes become visible when selecting that month.
-- Bills: evidence-backed monthly inference, approved in-app reminders, completion/reopening. No email or payment is sent.
-- Insights: transparent unusual-spending rules and transaction references, without fraud claims.
-- Agent: real server tools, visible results, evidence links, exact proposals, rejection, approval, expiry, and mutation timeline.
-- Activity: actor, decision, UTC timestamp, correlation ID and sanitized metadata.
-- Reports: downloadable monthly CSV and a genuine one-page PDF. Exported merchant text is neutralized for spreadsheets.
-- Theme, mobile navigation, keyboard controls, native modal focus management, reduced-motion support, loading/error/empty states.
-
-CSV format (signed USD amounts, maximum two decimal places; exact headers in this order):
-
-```csv
-date,merchant,amount,category
-2026-10-19,Demo Cafe,-24.50,Dining
-2026-10-18,Demo Studio,125.00,Income
-```
-
-Categories: Income, Dining, Groceries, Housing, Transport, Subscriptions, Utilities, Shopping, Health, Other. A [sample file](public/sample-transactions.csv) is downloadable in the import dialog. It uses fixed October 2026 dates; select that month after importing it. Duplicate identity is date + normalized merchant + signed amount; identical legitimate same-day purchases are therefore treated as duplicates. A bad row rejects the entire batch. Limits are 512 KB and 2,000 rows per import.
-
-## Verification
-
-Run `npm run verify` for the complete local suite. It uses a separate demo server on port 3100 and a build directory under `.next/verification`, without a database or paid model key. Override the port with `FINPILOT_TEST_PORT` if necessary. Actual outcomes and UTF-8 logs are written to `docs/evidence/checks`; all checks run even if one fails. The runner returns a failing exit code if any check fails.
-
-Individual commands remain available:
+For isolated local checks, leave `DATABASE_URL` and `OPENAI_API_KEY` unset. Install the optional Python dependencies before its tests:
 
 ```powershell
 npm run lint
 npm run typecheck
 npm run test
-npm run seed
+python -m pip install -r services/analytics/requirements.txt
+python -m unittest discover -s services/analytics -v
 npm run build
 npx playwright install chromium
 npm run test:e2e
-python -m unittest discover -s services/analytics -v
 ```
 
-Vitest tests domain calculations, approval security, real Request/Response API handlers, ownership, auth, imports and provider boundaries. Playwright exercises actual browser flows and mobile rendering against a running Next.js server, or starts one automatically. Keep `APP_ORIGIN` consistent with the browser URL; default tests use `http://127.0.0.1:3000`. Unit/API tests run in memory by default; unset inherited `DATABASE_URL` for an isolated run. Tests never require a paid LLM key.
+Playwright starts a development server automatically. Its default URL is `http://127.0.0.1:3000`; keep `APP_ORIGIN` consistent with the browser URL. To use a separate port, set both `APP_ORIGIN` and `E2E_BASE_URL` to that origin and set `FINPILOT_VERIFY_RUN=true` to require a fresh server.
 
-`node scripts/capture-demo.mjs` captures real UI screenshots, a PDF and sanitized audit events while a local server runs. `node scripts/verify-services.mjs` checks the production Next.js/Python path at port 3001 (override with `E2E_BASE_URL`). See [execution evidence](docs/execution-evidence.md) for exact results and limitations.
+Vitest covers calculations, ownership, authentication, CSV handling, provider boundaries, approval binding, concurrency, and rollback. Chromium scenarios exercise the complete user workflows and mobile rendering. CI also runs the TypeScript suite against PostgreSQL.
 
-## Production deployment
+The [retained execution record](docs/execution-evidence.md) links original JSON, logs, screenshots, and video. Routine checks above leave those evidence files unchanged. `npm run verify` deliberately replaces test evidence under `docs/evidence/`; `node scripts/collect-evidence.mjs` validates the captured run and updates its summary. Use these, the benchmark, and capture/recording scripts only when intentionally refreshing evidence. `node scripts/verify-services.mjs` checks a running Next.js/FastAPI integration; see its base-URL setting before running it.
 
-1. Provision PostgreSQL, apply `npm run db:migrate`, and back it up. Set `DATABASE_URL`, a strong persistent `SESSION_SECRET`, and an HTTPS `APP_ORIGIN` matching your public URL. Do not set `DEMO_MODE=true` for a durable deployment.
-2. Run `npm ci`, `npm run build`, then `npm run start -- --hostname 0.0.0.0`. Use a TLS reverse proxy; configure its request limits and per-IP rate limits. Serve from one canonical origin. HTTPS makes the session cookie Secure.
-3. Deploy FastAPI privately if wanted; set a strong shared service token and private `ANALYTICS_URL`. Do not expose its port publicly.
-4. For an explicitly temporary production preview, set `DEMO_MODE=true` before `npm run start`. Data remains ephemeral and single-process. Without a database or this explicit opt-in the API returns 503.
+## Demo instructions
 
-Builds do not require credentials or a live database. Deployment, domain registration, real bank integrations, transfers, email delivery, MFA, password recovery and regulatory certification are outside this sandbox's scope. Current rate limits are process-local: use a distributed gateway for multi-instance deployment. See [security self-assessment](docs/security-self-assessment.md).
+1. Start the app, open the local URL, and choose **Explore the live demo**.
+2. Open **AI copilot > Run demo scenario**. Inspect the tools, transaction references, and proposed next-month dining budget.
+3. Reject the proposal and confirm the budget is unchanged.
+4. Run the scenario again and approve it. In **Budgets**, select the proposal's target month and check the exact saved limit.
+5. Open **Activity & audit** to inspect both decisions.
 
-## Source map
+Follow the [five-minute demo script](docs/demo-script.md), or view the [retained application recording](docs/evidence/demo.webm). Accounting months and seed generation use UTC; use the actual values shown by the app.
 
-`src/app` — routes/layout/styles; `src/components` — client interfaces; `src/lib/domain.ts` — money/analysis; `csv.ts` — import/export; `store.ts` — memory/PostgreSQL repository; `security.ts` — sessions/approvals/audit; `agent.ts` — tool orchestration; `api.ts` — HTTP boundary; `prisma` — schema/migration; `services/analytics` — FastAPI; `tests` / `e2e` — verification.
+## Security limitations
 
-[Architecture](docs/architecture.md) · [Algorithms](docs/algorithms.md) · [Security](docs/security-self-assessment.md) · [Five-minute demo](docs/demo-script.md) · [Execution evidence](docs/execution-evidence.md)
+This is a synthetic sandbox. It has no bank connection, payment execution, external notification delivery, email verification, MFA, or password recovery. Inferred bills and unusual-spending rules are descriptive. Model-selected proposals can be incorrect and require human review.
+
+Memory storage and rate limits are process-local. The JSONB ledger and application-owned audit trail require further scaling, retention, and operational hardening for real users. Live-model reliability, hosted production operation, and independent penetration testing are unverified. No regulatory certification is claimed.
+
+Keep `.env`, credentials, session/approval tokens, and real financial records out of Git. See the [security assessment](docs/security-self-assessment.md) and [security reporting policy](SECURITY.md).
+
+## Competition materials and documentation
+
+The six completed competition deliverables are maintained separately in `FinPilot_AI_Doc` in the supplied workspace. This repository contains the runnable application, technical documentation, and original evidence referenced by those reports. A public deliverables URL has not been provided.
+
+[Requirements crosswalk](docs/competition-requirements.md) ? [Contributing](CONTRIBUTING.md) ? [License](LICENSE) ? [Third-party notices](THIRD_PARTY_NOTICES.md)
+
+## Authors
+
+- Shariar Nazim Joy
+- Abrar Hossain Abir
+
+Department of Computer Science and Engineering, Independent University, Bangladesh.

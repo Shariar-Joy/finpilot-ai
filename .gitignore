@@ -1,29 +1,43 @@
-# Local dependencies, build output and secrets
+# Dependencies, build output, and local tooling
 node_modules/
 .next/
-.env*
-!.env.example
 .venv/
+.tools/
 __pycache__/
 .pytest_cache/
+*.py[cod]
+*.tsbuildinfo
+coverage/
 playwright-report/
 test-results/
-coverage/
-*.tsbuildinfo
-*.log
-# Authentic current and archived execution evidence stays versioned
-!archive/**/runs/*.log
-!archive/**/docs/evidence/**/*.log
-!archive/**/docs/evidence/*.log
-!docs/evidence/checks/*.log
-!docs/evidence/*.log
-# Reproducible judge exports and private build intermediates
-output/packages/
+
+# Local configuration and credentials
+.env*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+.aws/
+
+# Generated reports, packages, and temporary exports
+output/
 submission/final/
 archive/generated-exports/
-.tools/
+*.zip
+*.pdf
 *.aux
 *.blg
 *.fls
 *.fdb_latexmk
 *.synctex.gz
+*.tmp
+*.temp
+
+# Original application exports and historical evidence remain versionable
+!docs/evidence/**/*.pdf
+!archive/**/docs/evidence/**/*.pdf
+*.log
+!docs/evidence/**/*.log
+!archive/**/docs/evidence/**/*.log
+!archive/**/docs/runs/*.log

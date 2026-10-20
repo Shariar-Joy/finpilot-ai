@@ -1,11 +1,7 @@
-# Archive — outside the primary submission
+# Historical execution evidence
 
-The file-by-file [structure audit](structure-audit.md) was completed before the cleanup. It records every KEEP, MOVE, ARCHIVE and DELETE decision; no deletion was selected.
+The active [execution record](../docs/execution-evidence.md) and `docs/evidence/` contain the original paths cited by the completed competition reports.
 
-The dated `2026-10-19-pre-simplification` snapshot preserves historical command logs, the previous review report, the optional Gamma prompt, old output ZIPs/checksums, original evidence, paper sources/PDFs and the pre-existing local Next.js type declaration. Its `manifest.json` records original file hashes. These records describe earlier runs and are not current verification results.
+This directory retains distinct earlier screenshots, recordings, test-result JSON, and raw logs at their existing paths. They describe historical runs and are not current verification results. Exact duplicates of active evidence and redundant application snapshots have been removed. Retained historical files are unchanged.
 
-Current application and financial behavior are retained. Canonical current evidence is in `docs/evidence`, editable papers in `submission/overleaf`, and compiled papers in `output/pdf`. The generated `submission/final` folder is the judge-facing view; generated download ZIPs live in `output/packages`.
-
-The packaging script excludes this archive from the source snapshot and judge export. Repeated packaging preserves prior generated exports in the ignored `generated-exports` directory instead of deleting them.
-
-The later [structure review decision table](structure-review-20261019T094907Z/KEEP_MOVE_ARCHIVE_DELETE.md) records the 118 primary files and every existing archived file before this review. Its adjacent `before/` snapshot and SHA-256 manifest preserve the pre-existing working tree, including local edits, before verification records were refreshed. No application feature changes or deletions form part of that review.
+`generated-exports/` is ignored local output. Some pre-existing packages there contain additional historical evidence, so they remain available locally for review and are not published by Git.
